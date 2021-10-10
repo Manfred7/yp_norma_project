@@ -1,5 +1,5 @@
 import React, {Component, useState} from 'react';
-import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
+import {Tab, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from 'prop-types';
 import {IngredientType} from "../../utils/types.js"
 import s from "./burger-ingredients.module.css"
@@ -27,9 +27,9 @@ const IngrTabs = () => {
 
 const Ingridient = ({source}) => {
     return (
-        <li key={source._id} className={s.catalogItem}>
+        <li  className={s.catalogItem}>
 
-            <img src={source.image}/>
+            <img src={source.image} alt={source.name}/>
 
             <div className={s.priceConstainer}>
 
@@ -55,18 +55,19 @@ class BurgerIngredients extends Component {
             <section>
                 <IngrTabs/>
 
-                <div className={s.scrollContainer}>
-                    <ul className={s.catalogList}>
+                    <div className={s.scrollContainer}>
+                        <ul className={s.catalogList}>
 
-                        {this.props.ingrs.map((elem => {
-                            return (
+                            {this.props.ingrs.map((elem => {
+                                return (
 
-                                <Ingridient source={elem}/>
-                            )
-                        }))}
+                                    <Ingridient key={elem._id} source={elem}/>
+                                )
+                            }))}
 
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+
 
             </section>
         );
