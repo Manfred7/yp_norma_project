@@ -1,0 +1,34 @@
+.scrollContainer {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 250px);
+    overflow-y: scroll;
+}
+
+.catalogList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.catalogItem {
+    margin-right: 30px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 200px;
+}
+
+.priceConstainer {
+    display: flex;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.price{
+    padding-left: 10px;
+    padding-top: 20px;
+    margin-right: 15px;
+}
