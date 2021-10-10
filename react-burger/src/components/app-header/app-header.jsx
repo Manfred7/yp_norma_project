@@ -5,28 +5,44 @@ import s from "./app-header.module.css"
 // TODO: прикрутить из флексбокса равномерное распределение  элементов по горизонтали
 // TODO: сверстать на nav header и прочих семантически шутках.
 //TODO: списки лишками
+
+
+const our = () => {
+    return ''
+}
+
 class AppHeader extends Component {
     render() {
         return (
-            <div className={s.main +" "+ "mt-5"}>
-                <div className={s.item}>
-                    <BurgerIcon type="primary"/>
-                    Конструктор
-                </div>
-                <div className={s.item}>
-                    <ListIcon type="primary"/>
-                    Лента заказов
-                </div>
-                <div className={s.item}>
-                    <Logo/>
-                </div>
-                <div className={s.item}>
-                    <ProfileIcon type="primary"/>
-                    Личный кабинет
-                </div>
-            </div>
-        );
-    }
-}
+            <header className={s.mainHeader}>
+                <nav className={s.mainHeaderNav + " " + s.container}>
+                    <ul className={s.siteNavigation}>
+                        <li className={s.siteNavigationItem}>
+                            <BurgerIcon type="primary"/>
+                            <a className={s.linkItem} href="#">Конструктор</a>
+                        </li>
+                        <li className={s.siteNavigationItem}>
+                            <ListIcon type="primary"/>
+                            <a className={s.linkItem} href="#">Лента заказов</a>
+                        </li>
+                    </ul>
 
-export default AppHeader;
+                    <a className={s.mainHeaderLogo} href="index.html">
+                        <Logo/>
+                    </a>
+
+                    <ul className={s.siteNavigation}>
+                        <li className={s.siteNavigationItem}>
+                            <ProfileIcon type="primary"/>
+                            <a className={s.linkItem} href="#">Личный кабинет</a>
+                        </li>
+                    </ul>
+
+                </nav>
+            </header>
+
+        )
+    }
+    }
+
+    export default AppHeader;
