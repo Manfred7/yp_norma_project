@@ -1,26 +1,27 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import AppHeader from "./components/app-header/app-header";
+import BurgerIngredients from "./components/burger-ingredients/burger-ingredients";
+import BurgerConstructor from "./components/burger-constructor/burger-constructor";
+import {getTestData} from "./utils/data";
+import PropTypes from 'prop-types';
 
 function App() {
-  return (
+  const data = getTestData();
+
+
+
+    return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <AppHeader/>
+      <BurgerIngredients ingrs ={data}/>
+      <BurgerConstructor/>
+
     </div>
   );
 }
+
+//BurgerIngredients.propTypes = {};
 
 export default App;
