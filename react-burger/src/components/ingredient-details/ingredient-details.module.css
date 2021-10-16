@@ -1,0 +1,56 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom:  40px;
+}
+
+.doneIcon {
+    width: 120px;
+    height: 120px;
+    align-self: center;
+}
+
+.gridContainer {
+    margin-top: 30px;
+    display: grid;
+    column-gap: 10px;
+    row-gap: 5px;
+    grid-template-areas:
+    "A B C D"
+    "E F L K "
+}
+
+.box1 {
+    grid-area: A;
+}
+
+.box2 {
+    grid-area: B;
+}
+
+.box3 {
+    grid-area: C;
+}
+
+.box4 {
+    grid-area: D;
+}
+
+.box5 {
+    grid-area: E;
+}
+
+.box6 {
+    grid-area: F;
+}
+
+.box7 {
+    grid-area: L;
+}
+
+.box8 {
+    grid-area: K;
+}
