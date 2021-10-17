@@ -2,6 +2,8 @@ import React from 'react';
 import s from "./modal.module.css"
 import ReactDOM from "react-dom";
 import ModalOverlay from "../modal-overlay/modal-overlay";
+import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
+
 import PropTypes from "prop-types";
 
 const ESCAPE = 'Escape';
@@ -11,12 +13,12 @@ const Modal = (props) => {
 
     const {children, header, onClose, isOpen} = props;
 
-    const handleKeyDown = React.useCallback( (evt) => {
+    const handleKeyDown = React.useCallback((evt) => {
         if (evt.key === ESCAPE) {
             onClose();
             evt.preventDefault();
         }
-    },[onClose]);
+    }, [onClose]);
 
     React.useEffect(() => {
 
@@ -25,11 +27,10 @@ const Modal = (props) => {
         }
 
         return () => {
-            if (isOpen) {
-                document.removeEventListener('keydown', handleKeyDown);
-            }
+
+            document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isOpen,handleKeyDown]);
+    }, [isOpen, handleKeyDown]);
 
 
     if (!props.isOpen)
@@ -43,9 +44,7 @@ const Modal = (props) => {
                     <h3 className={s.caption + ' text text_type_main-large'}>
                         {header}
                     </h3>
-                    <button className={s.btnClose}
-                            onClick={onClose}
-                    />
+                    <CloseIcon onClick={onClose} />
                 </div>
                 <div className={s.children}>{children}</div>
             </div>
@@ -54,8 +53,8 @@ const Modal = (props) => {
 }
 
 Modal.propTypes = {
-    children : PropTypes.element.isRequired,
-    header:PropTypes.string,
+    children: PropTypes.element.isRequired,
+    header: PropTypes.string,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired
 };

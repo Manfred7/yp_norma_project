@@ -5,14 +5,20 @@ import BurgerIngredients from "../burger-ingredients/burger-ingredients.jsx";
 import BurgerConstructor from "../burger-constructor/burger-constructor.jsx";
 import {URL_BASE, URL_INGREDIENTS} from "../../utils/data";
 
-const App=() =>{
+const App = () => {
     const [state, setState] = React.useState({hasError: false, isLoading: false, ingredientsData: null});
 
-    const LoadIngedientsData = () => {
+
+    const loadIngedientsData = () => {
         setState({...state, hasError: false, isLoading: true});
 
         fetch(`${URL_BASE}${URL_INGREDIENTS}`)
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                }
+                return Promise.reject(`Ошибка ${res.status}`);
+            })
             .then(data => setState({...state, ingredientsData: data.data, isLoading: false}))
             .catch(e => {
                 setState({...state, hasError: true, isLoading: false});
@@ -20,7 +26,7 @@ const App=() =>{
     };
 
     React.useEffect(() => {
-        LoadIngedientsData();
+        loadIngedientsData();
     }, [])
 
     return (
@@ -36,6 +42,7 @@ const App=() =>{
                     <BurgerConstructor ingrs={state.ingredientsData}/>
                 </div>
             </main>
+
             }
         </>
     );

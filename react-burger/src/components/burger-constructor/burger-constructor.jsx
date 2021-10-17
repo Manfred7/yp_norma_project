@@ -43,10 +43,8 @@ const BurgerConstructor = (props) => {
     }
 
     const currentBun = getBuns(props.ingrs)[0];
-    console.log("currentBun", props);
 
     const mainsAndSauces = getMainsAndSauces(props.ingrs);
-
 
     const handleOpenModal = () => {
         setModalIsVisible(true);
@@ -65,7 +63,7 @@ const BurgerConstructor = (props) => {
 
                         <DragIcon type="primary"/>
                         <ConstructorElement
-                            type={"top"}
+                            type={""}
                             isLocked={false}
                             text={elem.name}
                             price={elem.price}
@@ -80,19 +78,23 @@ const BurgerConstructor = (props) => {
 
     return (
         <section>
-            <Bun description={currentBun.name + " (верх)"}
-                 image={currentBun.image}
-                 type={"top"}
-                 price={currentBun.price}/>
+            <div className={s.bunContainer}>
+                <Bun description={currentBun.name + " (верх)"}
+                     image={currentBun.image}
+                     type={"top"}
+                     price={currentBun.price}/>
+            </div>
 
             <ul className={s.scrollContainer + " " + s.catalogList}>
                 {fillIngrs()}
             </ul>
 
-            <Bun description={currentBun.name + " (низ)"}
-                 image={currentBun.image}
-                 type={"bottom"}
-                 price={currentBun.price}/>
+            <div className={s.bunContainer}>
+                <Bun description={currentBun.name + " (низ)"}
+                     image={currentBun.image}
+                     type={"bottom"}
+                     price={currentBun.price}/>
+            </div>
 
             <div className={s.totalConstainer}>
                 <div className={s.totalSum}>
