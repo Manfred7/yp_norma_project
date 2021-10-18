@@ -1,0 +1,11 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.doneIcon {
+    width: 120px;
+    height: 120px;
+    align-self: center;
+}

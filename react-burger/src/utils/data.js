@@ -212,6 +212,10 @@ const testData=[
         "__v":0
     }
 ]
+export const URL_BASE ="https://norma.nomoreparties.space";
+export const URL_INGREDIENTS = "/api/ingredients";
+
+
 
 export const getTestData =()=>{
     return testData

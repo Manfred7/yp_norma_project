@@ -1,8 +1,10 @@
-import React, {Component, useState} from 'react';
+import React, {useState} from 'react';
 import {Tab, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from 'prop-types';
 import {IngredientType} from "../../utils/types.js"
 import s from "./burger-ingredients.module.css"
+import IngredientDetails from "../ingredient-details/ingredient-details";
+import Modal from "../modal/modal";
 
 const IngrTabs = () => {
     const [current, setCurrent] = useState("Булки")
@@ -25,53 +27,71 @@ const IngrTabs = () => {
     )
 }
 
-const Ingridient = ({source}) => {
-    return (
-        <li  className={s.catalogItem}>
+const Ingridient = ({value, showDetail}) => {
 
-            <img src={source.image} alt={source.name}/>
+    const showModal = () => {
+        showDetail(value)
+    }
+
+    return (
+        <li className={s.catalogItem}>
+
+            <img src={value.image} alt={value.name} onClick={showModal}/>
 
             <div className={s.priceConstainer}>
 
                 <p className="text text_type_main-small pr-1">
-                    {source.price}
+                    {value.price}
                 </p>
                 <CurrencyIcon type="primary"/>
             </div>
 
             <p className="text text_type_main-small">
-                {source.name}
+                {value.name}
             </p>
 
         </li>)
 }
 
-class BurgerIngredients extends Component {
+Ingridient.propTypes = {
+    value: IngredientType.isRequired,
+    showDetail: PropTypes.func.isRequired
+};
 
-    render() {
+const BurgerIngredients = (props) => {
+    const [modalIsVisible, setModalIsVisible] = React.useState(false);
+    const [currentIngredient, setCurrentIngredient] = React.useState(null);
 
-        return (
-
-            <section>
-                <IngrTabs/>
-
-                    <div className={s.scrollContainer}>
-                        <ul className={s.catalogList}>
-
-                            {this.props.ingrs.map((elem => {
-                                return (
-
-                                    <Ingridient key={elem._id} source={elem}/>
-                                )
-                            }))}
-
-                        </ul>
-                    </div>
-
-
-            </section>
-        );
+    const setCurrentAndOpenModal = (value) => {
+        setCurrentIngredient(value);
+        setModalIsVisible(true);
     }
+
+    const handleCloseModal = () => {
+        setModalIsVisible(!modalIsVisible);
+    }
+
+    return (
+        <section>
+            <IngrTabs/>
+            <div className={s.scrollContainer}>
+                <ul className={s.catalogList}>
+                    {props.ingrs.map((elem => {
+                        return (
+                            <Ingridient key={elem._id} value={elem} showDetail={setCurrentAndOpenModal}/>
+                        )
+                    }))}
+                </ul>
+            </div>
+            {
+                currentIngredient &&
+                <Modal isOpen={modalIsVisible} header="Детали ингридиента" onClose={handleCloseModal}>
+                    <IngredientDetails ingr={currentIngredient}/>
+                </Modal>
+            }
+
+        </section>
+    );
 }
 
 BurgerIngredients.propTypes = {
