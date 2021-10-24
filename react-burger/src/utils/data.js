@@ -214,6 +214,7 @@ const testData=[
 ]
 export const URL_BASE ="https://norma.nomoreparties.space";
 export const URL_INGREDIENTS = "/api/ingredients";
+export const URL_POST_ORDER ="/api/orders";
 
 
 

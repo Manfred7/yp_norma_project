@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import PropTypes from "prop-types";
-import {IngredientType} from "../../utils/types.js"
 import {ConstructorElement, DragIcon, Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import s from "./burger-constructor.module.css"
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
+import {BurgerContext} from "../../services/burger-context";
 
 const Bun = (props) => {
 
@@ -26,33 +26,35 @@ Bun.propTypes = {
     price: PropTypes.number.isRequired
 }
 
-const BurgerConstructor = (props) => {
+const BurgerConstructor = () => {
 
     const [modalIsVisible, setModalIsVisible] = React.useState(false);
-    const totalSum = 610;
+    const [needShowConfirm, setNeedShowConfirm] = React.useState(true);
 
-    const getIngrsByType = (arr, ingrType) => {
-        return arr.filter((elem) => elem.type === ingrType)
+    const {order, pushOrder} = useContext(BurgerContext);
+
+    const totalSum = order.totalPrice;
+
+    const currentBun = order.bun;
+    const mainsAndSauces = [...order.mains, ...order.sauces];
+
+    const sendOrder = () => {
+        pushOrder();
+        setNeedShowConfirm(true);
     }
-    const getBuns = (arr) => {
-        return getIngrsByType(arr, "bun");
-    }
-
-    const getMainsAndSauces = (arr) => {
-        return arr.filter((elem) => elem.type !== "bun")
-    }
-
-    const currentBun = getBuns(props.ingrs)[0];
-
-    const mainsAndSauces = getMainsAndSauces(props.ingrs);
-
     const handleOpenModal = () => {
         setModalIsVisible(true);
     }
 
     const handleCloseModal = () => {
         setModalIsVisible(false);
+        setNeedShowConfirm(false);
     }
+    useEffect(() => {
+        if (order.success && needShowConfirm)
+            handleOpenModal();
+    })
+
     const fillIngrs = () => {
 
         return mainsAndSauces.map((elem) => {
@@ -82,7 +84,7 @@ const BurgerConstructor = (props) => {
                 <Bun description={currentBun.name + " (верх)"}
                      image={currentBun.image}
                      type={"top"}
-                     price={currentBun.price}/>
+                     price={order.bunDisplayPrice}/>
             </div>
 
             <ul className={s.scrollContainer + " " + s.catalogList}>
@@ -93,7 +95,7 @@ const BurgerConstructor = (props) => {
                 <Bun description={currentBun.name + " (низ)"}
                      image={currentBun.image}
                      type={"bottom"}
-                     price={currentBun.price}/>
+                     price={order.bunDisplayPrice}/>
             </div>
 
             <div className={s.totalConstainer}>
@@ -104,20 +106,16 @@ const BurgerConstructor = (props) => {
                 </div>
 
                 <div style={{overflow: "hidden"}}>
-                    <Button type="primary" size="large" onClick={handleOpenModal}>
+                    <Button type="primary" size="large" onClick={sendOrder}>
                         Оформить заказ
                     </Button>
-                    <Modal isOpen={modalIsVisible} onClose={handleCloseModal}>
-                        <OrderDetails orderId={"034536"}/>
+                    <Modal isOpen={modalIsVisible && needShowConfirm} onClose={handleCloseModal}>
+                        <OrderDetails orderId={order.number}/>
                     </Modal>
                 </div>
             </div>
         </section>
     );
 }
-
-BurgerConstructor.propTypes = {
-    ingrs: PropTypes.arrayOf(IngredientType.isRequired).isRequired
-};
 
 export default BurgerConstructor;

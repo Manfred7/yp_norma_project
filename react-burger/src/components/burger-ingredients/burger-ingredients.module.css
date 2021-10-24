@@ -22,7 +22,7 @@
     justify-content: space-between;
 }
 
-.priceConstainer {
+.priceContainer {
     display: flex;
     justify-content: center;
     padding-left: 10px;
