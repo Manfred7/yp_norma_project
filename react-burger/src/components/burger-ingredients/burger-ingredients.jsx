@@ -1,16 +1,18 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Tab, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from 'prop-types';
 import {IngredientType} from "../../utils/types.js"
 import s from "./burger-ingredients.module.css"
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import Modal from "../modal/modal";
+import {OrderContext} from "../../services/order-context";
 
 const IngrTabs = () => {
     const [current, setCurrent] = useState("Булки")
     const arr = [
         {caption: "Булки", id: 1}, {caption: "Соусы", id: 2}, {caption: "Начинки", id: 3}
     ];
+
     return (
         <div style={{display: 'flex'}}>
             {arr.map((elem => {
@@ -27,7 +29,7 @@ const IngrTabs = () => {
     )
 }
 
-const Ingridient = ({value, showDetail}) => {
+const Ingredient = ({value, showDetail}) => {
 
     const showModal = () => {
         showDetail(value)
@@ -38,8 +40,7 @@ const Ingridient = ({value, showDetail}) => {
 
             <img src={value.image} alt={value.name} onClick={showModal}/>
 
-            <div className={s.priceConstainer}>
-
+            <div className={s.priceContainer}>
                 <p className="text text_type_main-small pr-1">
                     {value.price}
                 </p>
@@ -53,14 +54,16 @@ const Ingridient = ({value, showDetail}) => {
         </li>)
 }
 
-Ingridient.propTypes = {
+Ingredient.propTypes = {
     value: IngredientType.isRequired,
     showDetail: PropTypes.func.isRequired
 };
 
-const BurgerIngredients = (props) => {
+const BurgerIngredients = () => {
     const [modalIsVisible, setModalIsVisible] = React.useState(false);
     const [currentIngredient, setCurrentIngredient] = React.useState(null);
+
+    const {sourceIngredients} = useContext(OrderContext);
 
     const setCurrentAndOpenModal = (value) => {
         setCurrentIngredient(value);
@@ -76,9 +79,9 @@ const BurgerIngredients = (props) => {
             <IngrTabs/>
             <div className={s.scrollContainer}>
                 <ul className={s.catalogList}>
-                    {props.ingrs.map((elem => {
+                    {sourceIngredients.map((elem => {
                         return (
-                            <Ingridient key={elem._id} value={elem} showDetail={setCurrentAndOpenModal}/>
+                            <Ingredient key={elem._id} value={elem} showDetail={setCurrentAndOpenModal}/>
                         )
                     }))}
                 </ul>
@@ -89,14 +92,9 @@ const BurgerIngredients = (props) => {
                     <IngredientDetails ingr={currentIngredient}/>
                 </Modal>
             }
-
         </section>
     );
 }
-
-BurgerIngredients.propTypes = {
-    ingrs: PropTypes.arrayOf(IngredientType.isRequired).isRequired
-};
 
 export default BurgerIngredients;
 

@@ -4,6 +4,7 @@ import s from './order-details.module.css'
 import PropTypes from "prop-types";
 
 const OrderDetails = (props) => {
+
     return (
         <div className={s.mainContainer}>
            <h3 className="text text_type_digits-large">{props.orderId}</h3>
@@ -16,7 +17,7 @@ const OrderDetails = (props) => {
 };
 
 OrderDetails.propTypes = {
-    orderId: PropTypes.string.isRequired
+    orderId: PropTypes.number.isRequired
 };
 
 
