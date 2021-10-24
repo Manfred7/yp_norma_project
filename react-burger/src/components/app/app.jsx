@@ -4,7 +4,7 @@ import AppHeader from "../app-header/app-header.jsx";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients.jsx";
 import BurgerConstructor from "../burger-constructor/burger-constructor.jsx";
 import {URL_BASE, URL_INGREDIENTS, URL_POST_ORDER} from "../../utils/data";
-import {OrderContext} from "../../services/order-context";
+import {BurgerContext} from "../../services/burger-context";
 import {generateTestOrder} from "../../utils/test-utils";
 
 
@@ -141,7 +141,7 @@ const App = () => {
             <main className={s.container}>
                 <h1>Соберите бургер</h1>
                 <div className={s.mainBox}>
-                    <OrderContext.Provider value={
+                    <BurgerContext.Provider value={
                         {
                             sourceIngredients: state.ingredientsData,
                             order: order,
@@ -150,7 +150,7 @@ const App = () => {
                     }>
                         <BurgerIngredients/>
                         <BurgerConstructor/>
-                    </OrderContext.Provider>
+                    </BurgerContext.Provider>
                 </div>
             </main>
 

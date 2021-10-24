@@ -4,7 +4,7 @@ import {ConstructorElement, DragIcon, Button, CurrencyIcon} from "@ya.praktikum/
 import s from "./burger-constructor.module.css"
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
-import {OrderContext} from "../../services/order-context";
+import {BurgerContext} from "../../services/burger-context";
 
 const Bun = (props) => {
 
@@ -31,7 +31,7 @@ const BurgerConstructor = () => {
     const [modalIsVisible, setModalIsVisible] = React.useState(false);
     const [needShowConfirm, setNeedShowConfirm] = React.useState(true);
 
-    const {order, pushOrder} = useContext(OrderContext);
+    const {order, pushOrder} = useContext(BurgerContext);
 
     const totalSum = order.totalPrice;
 
@@ -78,7 +78,6 @@ const BurgerConstructor = () => {
         })
     }
 
-
     return (
         <section>
             <div className={s.bunContainer}>
@@ -110,7 +109,7 @@ const BurgerConstructor = () => {
                     <Button type="primary" size="large" onClick={sendOrder}>
                         Оформить заказ
                     </Button>
-                    <Modal isOpen={modalIsVisible} onClose={handleCloseModal}>
+                    <Modal isOpen={modalIsVisible && needShowConfirm} onClose={handleCloseModal}>
                         <OrderDetails orderId={order.number}/>
                     </Modal>
                 </div>

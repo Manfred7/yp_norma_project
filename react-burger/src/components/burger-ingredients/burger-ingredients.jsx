@@ -5,7 +5,7 @@ import {IngredientType} from "../../utils/types.js"
 import s from "./burger-ingredients.module.css"
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import Modal from "../modal/modal";
-import {OrderContext} from "../../services/order-context";
+import {BurgerContext} from "../../services/burger-context";
 
 const IngrTabs = () => {
     const [current, setCurrent] = useState("Булки")
@@ -63,7 +63,7 @@ const BurgerIngredients = () => {
     const [modalIsVisible, setModalIsVisible] = React.useState(false);
     const [currentIngredient, setCurrentIngredient] = React.useState(null);
 
-    const {sourceIngredients} = useContext(OrderContext);
+    const {sourceIngredients} = useContext(BurgerContext);
 
     const setCurrentAndOpenModal = (value) => {
         setCurrentIngredient(value);
