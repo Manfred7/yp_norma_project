@@ -26,6 +26,9 @@
     background-color: rgba(0, 0, 0, 0);
 
 }
+.draggableItem{
+    cursor: move;
+}
 
 .totalConstainer {
     display: flex;

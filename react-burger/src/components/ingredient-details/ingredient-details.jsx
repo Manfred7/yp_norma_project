@@ -1,9 +1,11 @@
 import React from 'react';
-import {IngredientType} from "../../utils/types.js"
 import s from "./ingredient-details.module.css"
+import {useSelector} from "react-redux";
+import {currentIngredientsSelectors} from "../../services/selectors/current-ingredient-selector";
 
-const IngredientDetails = (props) => {
-    const details = props.ingr;
+const IngredientDetails = () => {
+
+    const details = useSelector(currentIngredientsSelectors.ingredientInfo);
 
     return (
         <div className={s.mainContainer}>
@@ -24,9 +26,6 @@ const IngredientDetails = (props) => {
     );
 };
 
-IngredientDetails.propTypes = {
-    ingr: IngredientType.isRequired
-};
 
 export default IngredientDetails;
 

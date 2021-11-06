@@ -1,16 +1,55 @@
-import React, {useContext, useState} from 'react';
-import {Tab, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import PropTypes from 'prop-types';
+import React, {useEffect, useRef} from 'react';
+import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
 import {IngredientType} from "../../utils/types.js"
 import s from "./burger-ingredients.module.css"
-import IngredientDetails from "../ingredient-details/ingredient-details";
-import Modal from "../modal/modal";
-import {BurgerContext} from "../../services/burger-context";
+import {useDispatch, useSelector} from "react-redux";
+import {ingredientsSelectors} from "../../services/selectors/ingredients-list-selectors";
+import {useDrag} from "react-dnd";
+import {SHOW_CURRENT_INGREDIENT_MODAL} from "../../services/actions/current_ingedient";
+import {getBuns, getMains, getSauces} from "../../utils/utils";
+import {SET_CURRENT_TAB, SET_TAB_HEADERS} from "../../services/actions/ingredient-list";
+import {DRAG_DROP_TYPE, TAB_CAPTIONS} from "../../utils/const";
 
 const IngrTabs = () => {
-    const [current, setCurrent] = useState("Булки")
+    const dispatch = useDispatch();
+
+    const bunElement = useSelector(ingredientsSelectors.tabHeadersElements).bunElement;
+    const sauceElement = useSelector(ingredientsSelectors.tabHeadersElements).sauceElement;
+    const mainElement = useSelector(ingredientsSelectors.tabHeadersElements).mainElement;
+    const current = useSelector(ingredientsSelectors.currentTab);
+
+    const setCurrent = (value) => {
+        dispatch({type: SET_CURRENT_TAB, value: value});
+
+        let scrollToElement = null;
+
+        switch (value) {
+            case TAB_CAPTIONS.BUN: {
+                scrollToElement = bunElement;
+                break;
+            }
+            case  TAB_CAPTIONS.SAUCE: {
+                scrollToElement = sauceElement;
+                break;
+            }
+            case  TAB_CAPTIONS.MAINS: {
+                scrollToElement = mainElement;
+                break;
+            }
+            default:
+                scrollToElement = null;
+        }
+
+        if (scrollToElement) {
+            scrollToElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+
     const arr = [
-        {caption: "Булки", id: 1}, {caption: "Соусы", id: 2}, {caption: "Начинки", id: 3}
+        {caption: TAB_CAPTIONS.BUN, id: 1}, {caption: TAB_CAPTIONS.SAUCE, id: 2}, {caption: TAB_CAPTIONS.MAINS, id: 3}
     ];
 
     return (
@@ -29,14 +68,20 @@ const IngrTabs = () => {
     )
 }
 
-const Ingredient = ({value, showDetail}) => {
+const Ingredient = ({value}) => {
+    const dispatch = useDispatch();
+
+    const [, dragRef] = useDrag({
+        type: DRAG_DROP_TYPE.FROM_LIST_TO_CONSTRUCTOR,
+        item: value
+    });
 
     const showModal = () => {
-        showDetail(value)
+        dispatch({type: SHOW_CURRENT_INGREDIENT_MODAL, value: value})
     }
 
     return (
-        <li className={s.catalogItem}>
+        <li ref={dragRef} className={s.catalogItem}>
 
             <img src={value.image} alt={value.name} onClick={showModal}/>
 
@@ -51,47 +96,123 @@ const Ingredient = ({value, showDetail}) => {
                 {value.name}
             </p>
 
+            {value.__v > 0 &&
+            <Counter count={value.__v} size="small"/>
+            }
         </li>)
 }
 
 Ingredient.propTypes = {
-    value: IngredientType.isRequired,
-    showDetail: PropTypes.func.isRequired
+    value: IngredientType.isRequired
 };
 
 const BurgerIngredients = () => {
-    const [modalIsVisible, setModalIsVisible] = React.useState(false);
-    const [currentIngredient, setCurrentIngredient] = React.useState(null);
 
-    const {sourceIngredients} = useContext(BurgerContext);
+    const dispatch = useDispatch();
+    const currentTab = useSelector(ingredientsSelectors.currentTab);
+    const sourceIngredients = useSelector(ingredientsSelectors.ingredientsList);
 
-    const setCurrentAndOpenModal = (value) => {
-        setCurrentIngredient(value);
-        setModalIsVisible(true);
-    }
+    const refBuns = useRef();
+    const refMains = useRef();
+    const refSauces = useRef();
+    const refContainer = useRef();
 
-    const handleCloseModal = () => {
-        setModalIsVisible(!modalIsVisible);
-    }
+    const buns = getBuns(sourceIngredients);
+    const mains = getMains(sourceIngredients);
+    const sauces = getSauces(sourceIngredients);
+
+    useEffect(() => {
+
+        dispatch({
+            type: SET_TAB_HEADERS,
+            value: {
+                bunElement: refBuns.current,
+                sauceElement: refSauces.current,
+                mainElement: refMains.current
+            }
+        });
+    }, [dispatch])
+
+
+    const scrollListener = () => {
+
+        const container = refContainer.current;
+        const bunElement = refBuns.current;
+        const mainElement = refMains.current;
+        const sauceElement = refSauces.current;
+
+        if (!container || !bunElement || !sauceElement || !mainElement) {
+            dispatch({type: SET_CURRENT_TAB, value: TAB_CAPTIONS.BUN});
+            return;
+        }
+        const bunLength = Math.abs(
+            container.getBoundingClientRect().top -
+            bunElement.getBoundingClientRect().top
+        );
+        const sauceLength = Math.abs(
+            container.getBoundingClientRect().top -
+            sauceElement.getBoundingClientRect().top
+        );
+        const mainLength = Math.abs(
+            container.getBoundingClientRect().top -
+            mainElement.getBoundingClientRect().top
+        );
+
+        const rightTabLength = Math.min(bunLength, sauceLength, mainLength);
+
+        const newTab = bunLength === rightTabLength
+            ? TAB_CAPTIONS.BUN
+            : sauceLength === rightTabLength
+                ? TAB_CAPTIONS.SAUCE
+                : TAB_CAPTIONS.MAINS;
+
+        if (currentTab !== newTab) {
+            dispatch({type: SET_CURRENT_TAB, value: newTab});
+        }
+    };
+
 
     return (
         <section>
             <IngrTabs/>
-            <div className={s.scrollContainer}>
-                <ul className={s.catalogList}>
-                    {sourceIngredients.map((elem => {
-                        return (
-                            <Ingredient key={elem._id} value={elem} showDetail={setCurrentAndOpenModal}/>
-                        )
-                    }))}
-                </ul>
+
+            <div ref={refContainer} onScroll={scrollListener} className={s.scrollContainer}>
+
+                <div ref={refBuns}>
+                    <h2> Булки</h2>
+                    <ul className={s.catalogList}>
+                        {buns.map((elem => {
+                            return (
+                                <Ingredient key={elem._id} value={elem}/>
+                            )
+                        }))}
+                    </ul>
+                </div>
+
+                <div ref={refSauces}>
+                    <h2>Соусы</h2>
+                    <ul className={s.catalogList}>
+                        {sauces.map((elem => {
+                            return (
+                                <Ingredient key={elem._id} value={elem}/>
+                            )
+                        }))}
+                    </ul>
+                </div>
+
+                <div ref={refMains}>
+                    <h2>Начинки</h2>
+                    <ul className={s.catalogList}>
+                        {mains.map((elem => {
+                            return (
+                                <Ingredient key={elem._id} value={elem}/>
+                            )
+                        }))}
+                    </ul>
+                </div>
             </div>
-            {
-                currentIngredient &&
-                <Modal isOpen={modalIsVisible} header="Детали ингридиента" onClose={handleCloseModal}>
-                    <IngredientDetails ingr={currentIngredient}/>
-                </Modal>
-            }
+
+
         </section>
     );
 }
