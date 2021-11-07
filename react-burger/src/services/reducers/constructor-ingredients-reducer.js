@@ -32,10 +32,9 @@ export const constructorIngredientsReducer = (state = initialState, action) => {
                 };
             }
 
-
             if ((action.value.type === INGREDIENT_TYPES.MAIN) || (action.value.type === INGREDIENT_TYPES.SAUCE)) {
 
-                const newValue = {...action.value, index: getNewId()}
+                const newValue = {...action.value, innerId: getNewId()}
                 let copyMainsAndSauces = [...state.order.mainsAndSauces];
                 copyMainsAndSauces = [...copyMainsAndSauces, newValue];
 
@@ -56,8 +55,8 @@ export const constructorIngredientsReducer = (state = initialState, action) => {
         }
 
         case  MOVE_INGREDIENT: {
-            const dragIndex = state.order.mainsAndSauces.findIndex((item) => item.index === action.dragIndex);
-            const hoverIndex = state.order.mainsAndSauces.findIndex((item) => item.index === action.hoverIndex);
+            const dragIndex = action.dragIndex;
+            const hoverIndex = action.hoverIndex;
 
             const dragCard = {...state.order.mainsAndSauces[dragIndex]};
 
@@ -74,11 +73,11 @@ export const constructorIngredientsReducer = (state = initialState, action) => {
             };
         }
 
-        case    REMOVE_INGREDIENT: {
+        case  REMOVE_INGREDIENT: {
             let copyMainsAndSauces = [...state.order.mainsAndSauces];
 
             if ((action.value.type === INGREDIENT_TYPES.MAIN) || (action.value.type === INGREDIENT_TYPES.SAUCE)) {
-                copyMainsAndSauces = copyMainsAndSauces.filter((val) => val.index !== action.value.index)
+                copyMainsAndSauces = copyMainsAndSauces.filter((val) => val.innerId !== action.value.innerId)
 
             }
 

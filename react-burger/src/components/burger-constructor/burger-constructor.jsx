@@ -32,7 +32,7 @@ Bun.propTypes = {
     price: PropTypes.number.isRequired
 }
 
-const OrderIngredient = ({elem}) => {
+const OrderIngredient = ({elem, index}) => {
     const dispatch = useDispatch();
     const ref = useRef(null);
 
@@ -63,23 +63,21 @@ const OrderIngredient = ({elem}) => {
         accept: DRAG_DROP_TYPE.CONSTRUCTOR_SORT,
 
         hover(item, monitor) {
-            if (!ref.current) {
-                return;
-            }
 
-            if (!item.index) {
+            if (!ref.current) {
                 return;
             }
 
             const dragIndex = item.index;
 
-            const hoverIndex = elem.index;
+            const hoverIndex = index;
 
             if (dragIndex === hoverIndex) {
                 return;
             }
 
             const hoverBoundingRect = ref.current?.getBoundingClientRect();
+
             if (!hoverBoundingRect) return;
 
             const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
@@ -102,17 +100,19 @@ const OrderIngredient = ({elem}) => {
             item.index = hoverIndex;
         },
     });
+
     const [{isDragging}, drag] = useDrag({
         type: DRAG_DROP_TYPE.CONSTRUCTOR_SORT,
         item: () => {
-            return {...elem};
+            return {index};
         },
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
     });
-    const opacity = isDragging ? 0 : 1;
 
+    const opacity = isDragging ? 0 : 1;
+    
     drag(drop(ref));
 
     return (
@@ -134,6 +134,7 @@ const OrderIngredient = ({elem}) => {
     )
 }
 
+
 const BurgerConstructor = () => {
 
     const orderBody = useSelector(constructorSelectors.orderBody());
@@ -146,8 +147,8 @@ const BurgerConstructor = () => {
     let totalSum = sumPrice(mainsAndSauces);
 
     if (currentBun) {
-        totalSum = totalSum + currentBun.price*2;
-        bunDisplayPrice = currentBun.price ;
+        totalSum = totalSum + currentBun.price * 2;
+        bunDisplayPrice = currentBun.price;
     }
 
     const sendOrder = () => {
@@ -156,8 +157,8 @@ const BurgerConstructor = () => {
 
     const fillIngrs = () => {
 
-        return mainsAndSauces.map((elem) => {
-            return <OrderIngredient key={elem.index} elem={elem}/>
+        return mainsAndSauces.map((elem, index) => {
+            return <OrderIngredient key={elem.innerId} elem={elem} index={index}/>
 
         })
     }
