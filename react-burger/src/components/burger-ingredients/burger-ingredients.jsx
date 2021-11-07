@@ -179,7 +179,7 @@ const BurgerIngredients = () => {
             <div ref={refContainer} onScroll={scrollListener} className={s.scrollContainer}>
 
                 <div ref={refBuns}>
-                    <h2> Булки</h2>
+                    <h3 className={'text text_type_main-medium mt-5 '}>{TAB_CAPTIONS.BUN}</h3>
                     <ul className={s.catalogList}>
                         {buns.map((elem => {
                             return (
@@ -190,7 +190,7 @@ const BurgerIngredients = () => {
                 </div>
 
                 <div ref={refSauces}>
-                    <h2>Соусы</h2>
+                    <h3 className={'text text_type_main-medium mt-5 '}>{TAB_CAPTIONS.SAUCE}</h3>
                     <ul className={s.catalogList}>
                         {sauces.map((elem => {
                             return (
@@ -201,7 +201,7 @@ const BurgerIngredients = () => {
                 </div>
 
                 <div ref={refMains}>
-                    <h2>Начинки</h2>
+                    <h3 className={'text text_type_main-medium mt-5 '}>{TAB_CAPTIONS.MAINS}</h3>
                     <ul className={s.catalogList}>
                         {mains.map((elem => {
                             return (

@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import {ConstructorElement, DragIcon, Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import s from "./burger-constructor.module.css"
 import {useDispatch, useSelector} from "react-redux";
-import {ADD_INGREDIENT,MOVE_INGREDIENT, REMOVE_INGREDIENT} from "../../services/actions/burger-constructor";
+import {ADD_INGREDIENT, MOVE_INGREDIENT, REMOVE_INGREDIENT} from "../../services/actions/burger-constructor";
 import {useDrag, useDrop} from "react-dnd";
-import { AFTER_ADD_TO_CONSTRUCTOR,  AFTER_REMOVE_FROM_CONSTRUCTOR} from "../../services/actions/ingredient-list";
+import {AFTER_ADD_TO_CONSTRUCTOR, AFTER_REMOVE_FROM_CONSTRUCTOR} from "../../services/actions/ingredient-list";
 import {sumPrice} from "../../utils/utils";
 import {DRAG_DROP_TYPE, INGREDIENT_TYPES} from "../../utils/const";
 import {pushOrder} from "../../services/actions/order";
@@ -146,8 +146,8 @@ const BurgerConstructor = () => {
     let totalSum = sumPrice(mainsAndSauces);
 
     if (currentBun) {
-        totalSum = totalSum + currentBun.price
-        bunDisplayPrice = currentBun.price / 2;
+        totalSum = totalSum + currentBun.price*2;
+        bunDisplayPrice = currentBun.price ;
     }
 
     const sendOrder = () => {
@@ -176,6 +176,13 @@ const BurgerConstructor = () => {
                     type: AFTER_REMOVE_FROM_CONSTRUCTOR,
                     value: {...currentBun}
                 });
+
+                dispatch({
+                    type: AFTER_REMOVE_FROM_CONSTRUCTOR,
+                    value: {...currentBun}
+                });
+
+
             }
 
             dispatch({
@@ -184,10 +191,21 @@ const BurgerConstructor = () => {
 
             });
 
-            dispatch({
-                type: AFTER_ADD_TO_CONSTRUCTOR,
-                value: {...item}
-            })
+            if (item.type === INGREDIENT_TYPES.BUN) {
+                dispatch({
+                    type: AFTER_ADD_TO_CONSTRUCTOR,
+                    value: {...item}
+                })
+                dispatch({
+                    type: AFTER_ADD_TO_CONSTRUCTOR,
+                    value: {...item}
+                })
+            } else {
+                dispatch({
+                    type: AFTER_ADD_TO_CONSTRUCTOR,
+                    value: {...item}
+                })
+            }
         }
     });
 
