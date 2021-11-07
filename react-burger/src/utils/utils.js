@@ -1,6 +1,6 @@
-const BUN = "bun";
-const MAIN = "main";
-const SAUCE = "sauce";
+export const BUN = "bun";
+export const MAIN = "main";
+export const SAUCE = "sauce";
 
 const getRandomInt = (max) => Math.floor(Math.random() * (max));
 
@@ -28,19 +28,19 @@ const getIngrsByType = (arr, ingrType) => {
     return arr.filter((elem) => elem.type === ingrType)
 }
 
-const getBuns = (arr) => {
+export const getBuns = (arr) => {
     return getIngrsByType(arr, BUN);
 }
 
-const getMains = (arr) => {
+export const getMains = (arr) => {
     return getIngrsByType(arr, MAIN);
 }
 
-const getSauces = (arr) => {
+export const getSauces = (arr) => {
     return getIngrsByType(arr, SAUCE);
 }
 
-const sumPrice = (arr) => {
+export const sumPrice = (arr) => {
     let result = 0;
 
     arr.forEach((item) => {

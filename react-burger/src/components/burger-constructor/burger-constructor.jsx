@@ -1,10 +1,16 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useRef} from 'react';
 import PropTypes from "prop-types";
 import {ConstructorElement, DragIcon, Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import s from "./burger-constructor.module.css"
-import Modal from "../modal/modal";
-import OrderDetails from "../order-details/order-details";
-import {BurgerContext} from "../../services/burger-context";
+import {useDispatch, useSelector} from "react-redux";
+import {ADD_INGREDIENT, MOVE_INGREDIENT, REMOVE_INGREDIENT} from "../../services/actions/burger-constructor";
+import {useDrag, useDrop} from "react-dnd";
+import {AFTER_ADD_TO_CONSTRUCTOR, AFTER_REMOVE_FROM_CONSTRUCTOR} from "../../services/actions/ingredient-list";
+import {sumPrice} from "../../utils/utils";
+import {DRAG_DROP_TYPE, INGREDIENT_TYPES} from "../../utils/const";
+import {pushOrder} from "../../services/actions/order";
+import {constructorSelectors} from "../../services/selectors/constructor-ingredients-selector";
+
 
 const Bun = (props) => {
 
@@ -26,77 +32,209 @@ Bun.propTypes = {
     price: PropTypes.number.isRequired
 }
 
-const BurgerConstructor = () => {
+const OrderIngredient = ({elem, index}) => {
+    const dispatch = useDispatch();
+    const ref = useRef(null);
 
-    const [modalIsVisible, setModalIsVisible] = React.useState(false);
-    const [needShowConfirm, setNeedShowConfirm] = React.useState(true);
+    const doRemoveIngredient = (item) => {
 
-    const {order, pushOrder} = useContext(BurgerContext);
+        dispatch({
+            type: REMOVE_INGREDIENT,
+            value: {...item},
+        });
 
-    const totalSum = order.totalPrice;
-
-    const currentBun = order.bun;
-    const mainsAndSauces = [...order.mains, ...order.sauces];
-
-    const sendOrder = () => {
-        pushOrder();
-        setNeedShowConfirm(true);
-    }
-    const handleOpenModal = () => {
-        setModalIsVisible(true);
-    }
-
-    const handleCloseModal = () => {
-        setModalIsVisible(false);
-        setNeedShowConfirm(false);
-    }
-    useEffect(() => {
-        if (order.success && needShowConfirm)
-            handleOpenModal();
-    })
-
-    const fillIngrs = () => {
-
-        return mainsAndSauces.map((elem) => {
-
-            return (
-                <li key={elem._id} className={s.catalogItem}>
-                    <div className={s.mainsAndSaucesItem}>
-
-                        <DragIcon type="primary"/>
-                        <ConstructorElement
-                            type={""}
-                            isLocked={false}
-                            text={elem.name}
-                            price={elem.price}
-                            thumbnail={elem.image}
-                        />
-                    </div>
-                </li>
-            )
-
+        dispatch({
+            type: AFTER_REMOVE_FROM_CONSTRUCTOR,
+            value: {...item}
         })
     }
 
+    const moveCard = (dragIndex, hoverIndex) => {
+
+        dispatch({
+            type: MOVE_INGREDIENT,
+            dragIndex: dragIndex,
+            hoverIndex: hoverIndex
+        });
+
+    }
+
+    const [, drop] = useDrop({
+        accept: DRAG_DROP_TYPE.CONSTRUCTOR_SORT,
+
+        hover(item, monitor) {
+
+            if (!ref.current) {
+                return;
+            }
+
+            const dragIndex = item.index;
+
+            const hoverIndex = index;
+
+            if (dragIndex === hoverIndex) {
+                return;
+            }
+
+            const hoverBoundingRect = ref.current?.getBoundingClientRect();
+
+            if (!hoverBoundingRect) return;
+
+            const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+            const clientOffset = monitor.getClientOffset();
+            if (!clientOffset) return;
+
+            const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+                return;
+            }
+
+            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+                return;
+            }
+
+            moveCard(dragIndex, hoverIndex);
+
+            item.index = hoverIndex;
+        },
+    });
+
+    const [{isDragging}, drag] = useDrag({
+        type: DRAG_DROP_TYPE.CONSTRUCTOR_SORT,
+        item: () => {
+            return {index};
+        },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    });
+
+    const opacity = isDragging ? 0 : 1;
+    
+    drag(drop(ref));
+
     return (
-        <section>
+        <li ref={ref} className={s.catalogItem} style={{opacity}}>
+            <div className={s.mainsAndSaucesItem}>
+                <div className={s.draggableItem}>
+                    <DragIcon type="primary"/>
+                </div>
+                <ConstructorElement
+                    type={""}
+                    isLocked={false}
+                    text={elem.name}
+                    price={elem.price}
+                    thumbnail={elem.image}
+                    handleClose={() => doRemoveIngredient(elem)}
+                />
+            </div>
+        </li>
+    )
+}
+
+
+const BurgerConstructor = () => {
+
+    const orderBody = useSelector(constructorSelectors.orderBody());
+    const dispatch = useDispatch();
+
+    const currentBun = orderBody.bun;
+    const mainsAndSauces = orderBody.mainsAndSauces;
+
+    let bunDisplayPrice = 0;
+    let totalSum = sumPrice(mainsAndSauces);
+
+    if (currentBun) {
+        totalSum = totalSum + currentBun.price * 2;
+        bunDisplayPrice = currentBun.price;
+    }
+
+    const sendOrder = () => {
+        dispatch(pushOrder(orderBody));
+    }
+
+    const fillIngrs = () => {
+
+        return mainsAndSauces.map((elem, index) => {
+            return <OrderIngredient key={elem.innerId} elem={elem} index={index}/>
+
+        })
+    }
+    const [, dropRef] = useDrop({
+        accept: DRAG_DROP_TYPE.FROM_LIST_TO_CONSTRUCTOR,
+        drop(item) {
+
+            if ((currentBun) && (item.type === INGREDIENT_TYPES.BUN)) {
+
+                dispatch({
+                    type: REMOVE_INGREDIENT,
+                    value: {...currentBun}
+                });
+
+                dispatch({
+                    type: AFTER_REMOVE_FROM_CONSTRUCTOR,
+                    value: {...currentBun}
+                });
+
+                dispatch({
+                    type: AFTER_REMOVE_FROM_CONSTRUCTOR,
+                    value: {...currentBun}
+                });
+
+
+            }
+
+            dispatch({
+                type: ADD_INGREDIENT,
+                value: {...item}
+
+            });
+
+            if (item.type === INGREDIENT_TYPES.BUN) {
+                dispatch({
+                    type: AFTER_ADD_TO_CONSTRUCTOR,
+                    value: {...item}
+                })
+                dispatch({
+                    type: AFTER_ADD_TO_CONSTRUCTOR,
+                    value: {...item}
+                })
+            } else {
+                dispatch({
+                    type: AFTER_ADD_TO_CONSTRUCTOR,
+                    value: {...item}
+                })
+            }
+        }
+    });
+
+    return (
+        <section ref={dropRef}>
+
+            {currentBun &&
             <div className={s.bunContainer}>
-                <Bun description={currentBun.name + " (верх)"}
+                <Bun key={1} description={currentBun.name + " (верх)"}
                      image={currentBun.image}
                      type={"top"}
-                     price={order.bunDisplayPrice}/>
+                     price={bunDisplayPrice}/>
             </div>
+            }
 
             <ul className={s.scrollContainer + " " + s.catalogList}>
                 {fillIngrs()}
             </ul>
 
+
+            {currentBun &&
             <div className={s.bunContainer}>
-                <Bun description={currentBun.name + " (низ)"}
+                <Bun key={2} description={currentBun.name + " (низ)"}
                      image={currentBun.image}
                      type={"bottom"}
-                     price={order.bunDisplayPrice}/>
+                     price={bunDisplayPrice}/>
             </div>
+            }
 
             <div className={s.totalConstainer}>
                 <div className={s.totalSum}>
@@ -109,13 +247,12 @@ const BurgerConstructor = () => {
                     <Button type="primary" size="large" onClick={sendOrder}>
                         Оформить заказ
                     </Button>
-                    <Modal isOpen={modalIsVisible && needShowConfirm} onClose={handleCloseModal}>
-                        <OrderDetails orderId={order.number}/>
-                    </Modal>
+
                 </div>
             </div>
         </section>
     );
+
 }
 
 export default BurgerConstructor;
