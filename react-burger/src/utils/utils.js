@@ -1,3 +1,5 @@
+import {TOKENS} from "./const";
+
 export const BUN = "bun";
 export const MAIN = "main";
 export const SAUCE = "sauce";
@@ -83,3 +85,21 @@ export const generateTestOrder = (sorceData) => {
         errMsg: ""
     };
 }
+
+export const saveTokensToStorage = (data) => {
+    let authToken = "";
+
+    if (data.accessToken.indexOf('Bearer') === 0) {
+        authToken = data.accessToken.split('Bearer ')[1];
+    }
+
+    const refreshToken = data.refreshToken;
+
+    localStorage.setItem(TOKENS.ACCESS, authToken);
+    localStorage.setItem(TOKENS.REFRESH, refreshToken);
+}
+
+export const clearStorage = () => {
+    localStorage.clear();
+}
+

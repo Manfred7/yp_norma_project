@@ -1,8 +1,18 @@
 import {BurgerIcon, ListIcon, Logo, ProfileIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import React  from 'react';
+import React from 'react';
 import s from "./app-header.module.css"
+import {NavLink} from "react-router-dom";
+import {APP_ROUTS} from "../../utils/const";
 
 const AppHeader = () => {
+
+    const getTextClass = () => " text text_type_main-default pl-2 pt-2";
+
+    const navLinkClassName = ({isActive}) => {
+
+        const cn = isActive ? s.activeLink : s.linkItem;
+        return cn + getTextClass();
+    }
 
     return (
         <header className={s.mainHeader}>
@@ -10,26 +20,40 @@ const AppHeader = () => {
                 <ul className={s.siteNavigation}>
                     <li className={s.siteNavigationItem}>
                         <BurgerIcon type="primary"/>
-                        <a className={s.linkItem} href="index.html">Конструктор</a>
+                        <NavLink className={navLinkClassName}
+                                 to={APP_ROUTS.ROOT} >
+                            Конструктор
+                        </NavLink>
+
                     </li>
                     <li className={s.siteNavigationItem}>
                         <ListIcon type="primary"/>
-                        <a className={s.linkItem} href="index.html">Лента заказов</a>
+                        <NavLink className={navLinkClassName}
+                                 to={APP_ROUTS.ORDERS_LIST} >
+                            Лента заказов
+                        </NavLink>
+
                     </li>
                 </ul>
 
-                <a className={s.mainHeaderLogo} href="index.html">
+                <NavLink className={navLinkClassName}
+                         to={APP_ROUTS.ROOT} >
                     <Logo/>
-                </a>
+                </NavLink>
+
 
                 <ul className={s.siteNavigation}>
                     <li className={s.siteNavigationItem}>
                         <ProfileIcon type="primary"/>
-                        <a className={s.linkItem} href="index.html">Личный кабинет</a>
+                        <NavLink className={navLinkClassName}
+                                 to={APP_ROUTS.PROFILE} >
+                            Личный кабинет
+                        </NavLink>
                     </li>
                 </ul>
 
             </nav>
+
         </header>
 
     )

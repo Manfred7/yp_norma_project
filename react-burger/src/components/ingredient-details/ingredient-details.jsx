@@ -1,11 +1,7 @@
 import React from 'react';
 import s from "./ingredient-details.module.css"
-import {useSelector} from "react-redux";
-import {currentIngredientsSelectors} from "../../services/selectors/current-ingredient-selector";
 
-const IngredientDetails = () => {
-
-    const details = useSelector(currentIngredientsSelectors.ingredientInfo);
+const IngredientDetails = ({details}) => {
 
     return (
         <div className={s.mainContainer}>

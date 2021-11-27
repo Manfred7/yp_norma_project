@@ -8,6 +8,7 @@
 
 a {
     color: inherit;
+    text-decoration: none;
 }
 
 .mainHeader{
@@ -16,7 +17,7 @@ a {
 .mainHeaderNav {
     display: flex;
 
-    align-items: center;
+    justify-content: space-around;
 }
 
 .siteNavigation {
@@ -39,6 +40,14 @@ a {
 
 .linkItem {
     text-decoration: none;
+    color: #8585AD;
+}
+
+
+.activeLink {
+
+    text-decoration: none;
+    color: #F2F2F3;
 }
 
 .mainHeaderLogo {

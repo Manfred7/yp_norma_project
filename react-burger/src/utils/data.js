@@ -223,6 +223,16 @@ export const URL_BASE = "https://norma.nomoreparties.space";
 export const URL_INGREDIENTS = "/api/ingredients";
 export const URL_POST_ORDER = "/api/orders";
 
+export const URL_POST_LOGIN = "/api/auth/login";
+export const URL_POST_REGISTER = "/api/auth/register";
+export const URL_POST_LOGOUT = "/api/auth/logout";
+export const URL_POST_TOKEN = "/api/auth/token";
+export const URL_USER_INFO ="/api/auth/user"
+
+
+export const URL_PASSWORD_RESET_FORGOT ="/api/password-reset";
+export const URL_PASSWORD_RESET ="/api/password-reset/reset";
+
 
 export const getTestData = () => {
     return testData

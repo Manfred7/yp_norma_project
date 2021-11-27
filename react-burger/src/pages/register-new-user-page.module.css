@@ -1,0 +1,31 @@
+.link{
+
+    color:#4C4CFF;
+}
+
+.mainContainer {
+    position: fixed;
+    flex-direction: column;
+    text-align: center;
+    width: 480px;
+    height: 430px;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.inputEmail {
+    margin-left:  80px;
+    margin-top: 24px;
+
+}
+
+.inputPassword {
+    margin-left:  80px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+
+
+}
+

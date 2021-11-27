@@ -1,79 +1,179 @@
-import React from 'react';
-import s from './app.module.css';
-import AppHeader from "../app-header/app-header.jsx";
-import BurgerIngredients from "../burger-ingredients/burger-ingredients.jsx";
-import BurgerConstructor from "../burger-constructor/burger-constructor.jsx";
+import React, {useEffect} from 'react';
+import {BrowserRouter, Route, Routes, useLocation} from 'react-router-dom';
 
+import NotFound404Page from "../../pages/not-found-404-page";
+import LoginPage from "../../pages/login-page";
+import BurgerConstructorPage from "../../pages/burger-constructor-page";
+import AppHeader from "../app-header/app-header";
+import RegisterNewUserPage from "../../pages/register-new-user-page";
+import ResetPasswordPage from "../../pages/reset-password-page";
+import UserProfilePage, {EditUserProfileForm} from "../../pages/user-profile-page";
+import IngredientPage from "../../pages/ingredient-page";
+import ForgotPasswordPage from "../../pages/forgot-password-page";
+import {APP_ROUTS, TOKENS} from "../../utils/const";
+import OrderListPage from "../../pages/order-list-page";
+import {ToastContainer} from "react-toastify";
+
+import 'react-toastify/dist/ReactToastify.css';
 import {useDispatch, useSelector} from "react-redux";
-import {getIngredientsData, RESET_INGREDIENT_LIST} from "../../services/actions/ingredient-list";
-import {CLOSE_ORDER_MODAL} from "../../services/actions/order";
+import {doGetUserInfo} from "../../services/actions/auth";
 import {ingredientsSelectors} from "../../services/selectors/ingredients-list-selectors";
-import {HTML5Backend} from "react-dnd-html5-backend";
-import {DndProvider} from "react-dnd";
-import Modal from "../modal/modal";
-import IngredientDetails from "../ingredient-details/ingredient-details";
-import {CLOSE_CURRENT_INGREDIENT_MODAL} from "../../services/actions/current_ingedient";
-import {currentIngredientsSelectors} from "../../services/selectors/current-ingredient-selector";
-import {orderSelectors} from "../../services/selectors/order-selectors";
-import OrderDetails from "../order-details/order-details";
-import {RESET_CONSTRUCTOR} from "../../services/actions/burger-constructor";
+import {getIngredientsData} from "../../services/actions/ingredient-list";
+import IngredientModal from "../ingredient-modal/ingredient-modal";
+import ProtectedRoute from "../protected-route/protected-route";
 
 const App = () => {
+
     const dispatch = useDispatch();
-    const hasError = useSelector(ingredientsSelectors.hasError);
-    const isLoading = useSelector(ingredientsSelectors.isLoading);
-    const ingredientsList = useSelector(ingredientsSelectors.ingredientsList);
-    const currentIngredient = useSelector(currentIngredientsSelectors.ingredientInfo);
-    const currentIngredientModalIsVisible = useSelector(currentIngredientsSelectors.modalIsVisible());
-    const orderModalIsVisible = useSelector(orderSelectors.modalIsVisible());
-    const order = useSelector(orderSelectors.order());
+
     const needLoad = useSelector(ingredientsSelectors.needReload);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (needLoad) {
             dispatch(getIngredientsData())
         }
     }, [dispatch, needLoad])
 
-    const handleCloseCurrentIngredientModal = () => {
-        dispatch({type: CLOSE_CURRENT_INGREDIENT_MODAL})
-    }
+    useEffect(() => {
+        const accessToken = localStorage.getItem(TOKENS.ACCESS);
 
-    const handleCloseOrderModal = () => {
-        dispatch({type: CLOSE_ORDER_MODAL})
-        dispatch({type: RESET_INGREDIENT_LIST})
-        dispatch({type: RESET_CONSTRUCTOR})
-    }
+        if (accessToken) {
+
+            dispatch(doGetUserInfo());
+        }
+
+    }, [dispatch]);
+
+    return (
+        <BrowserRouter>
+            <AppHeader/>
+            <AppBody/>
+            <AppToasts/>
+        </BrowserRouter>
+    );
+}
+
+const AppBody = () => {
+
+    const hasError = useSelector(ingredientsSelectors.hasError);
+    const isLoading = useSelector(ingredientsSelectors.isLoading);
+    return (
+        <>
+            {isLoading && <div>Идет загузка данных!</div>}
+            {hasError && <div>При попытке получения данных от сервера произошла ошибка!</div>}
+            <AppPages/>
+        </>)
+}
+
+const AppToasts = () => {
+    return (
+        <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+        />)
+}
+
+const AppPages = () => {
+
+    const location = useLocation();
+    const background = location.state?.background;
 
     return (
         <>
-            <AppHeader/>
-            {isLoading && <div>Идет загузка данных!</div>}
-            {hasError && <div>При попытке получения данных от сервера произошла ошибка!</div>}
-            {!isLoading && !hasError && (ingredientsList.length > 0) &&
-            <main className={s.container}>
-                <h1>Соберите бургер</h1>
-                <div className={s.mainBox}>
-                    <DndProvider backend={HTML5Backend}>
-                        <BurgerIngredients/>
-                        <BurgerConstructor/>
-                    </DndProvider>
-                </div>
-                {
-                    currentIngredient &&
-                    <Modal isOpen={currentIngredientModalIsVisible} header="Детали ингридиента" onClose={handleCloseCurrentIngredientModal}>
-                        <IngredientDetails/>
-                    </Modal>
 
-                }
-                {order.success &&
-                <Modal isOpen={orderModalIsVisible} onClose={handleCloseOrderModal}>
-                    <OrderDetails orderId={order.number}/>
-                </Modal>
-                }
-            </main>
+            <Routes location={background ?? location}>
+                <Route path={APP_ROUTS.ROOT}
+                       exact={true}
+                       element={
+                           <ProtectedRoute>
+                               <BurgerConstructorPage/>
+                           </ProtectedRoute>
+                       }
+                />
 
-            }
+                <Route path={APP_ROUTS.INGREDIENT} exact={true}
+                       element={
+                           <ProtectedRoute>
+                               <IngredientPage/>
+                           </ProtectedRoute>}
+                />
+
+
+                <Route path={APP_ROUTS.LOGIN}
+                       exact={true}
+                       element={
+                           <ProtectedRoute>
+                               <LoginPage/>
+                           </ProtectedRoute>
+                       }
+                />
+
+                <Route path={APP_ROUTS.REGISTRATION}
+                       exact={true}
+                       element={
+                           <ProtectedRoute>
+                               <RegisterNewUserPage/>
+                           </ProtectedRoute>
+                       }
+                />
+
+                <Route path={APP_ROUTS.FORGOT_PASSWORD}
+                       exact={true}
+                       element={
+                           <ProtectedRoute>
+                               <ForgotPasswordPage/>
+                           </ProtectedRoute>
+                       }
+                />
+
+                <Route path={APP_ROUTS.RESET_PASSWORD}
+                       exact={true}
+                       element={
+                           <ProtectedRoute>
+                               <ResetPasswordPage/>
+                           </ProtectedRoute>
+                       }
+                />
+
+                <Route path={APP_ROUTS.PROFILE}
+                       element={
+                           <ProtectedRoute>
+                               <UserProfilePage/>
+                           </ProtectedRoute>
+                       }>
+
+                    <Route index
+                           element={
+                               <EditUserProfileForm/>
+                           }/>
+
+                    <Route path={APP_ROUTS.ORDERS_LIST}
+                           element={
+                               <OrderListPage/>
+                           }/>
+                </Route>
+
+                <Route path={APP_ROUTS.NOT_FOUND} element={<NotFound404Page/>}/>
+
+            </Routes>
+
+            {background && (
+                <Routes>
+                    <Route path={APP_ROUTS.INGREDIENT}
+                           element={
+                               <IngredientModal/>
+                           }
+                    />
+                </Routes>
+            )}
+
         </>
     );
 }
