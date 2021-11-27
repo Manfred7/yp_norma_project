@@ -160,11 +160,20 @@ const BurgerConstructor = () => {
 
     const sendOrder = () => {
 
+
+
        if (!userIsAuth) {
            toast.info("Для регистрации заказа необходимо зайти в систему!");
            navigate(APP_ROUTS.LOGIN);
        }
        else {
+
+           if (!currentBun){
+               toast.error("Необходимо добавить булку!");
+
+               return
+           }
+
            toast.info("Регистрируем заказ!");
            dispatch(pushOrder(orderBody));
        }

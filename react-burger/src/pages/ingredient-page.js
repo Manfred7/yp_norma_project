@@ -9,7 +9,7 @@ const IngredientPage = () => {
 
     const {id} = useParams();
 
-    let currentIngredient = useSelector(ingredientsSelectors.item(id));
+    const currentIngredient = useSelector(ingredientsSelectors.item(id));
 
     return (
         <>
