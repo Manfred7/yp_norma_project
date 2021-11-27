@@ -1,0 +1,120 @@
+.link{
+
+    color:#4C4CFF;
+}
+
+.mainContainer {
+    position: fixed;
+    flex-direction: column;
+    text-align: center;
+    width: 480px;
+    height: 430px;
+
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.inputEmail {
+    margin-left:  80px;
+    margin-top: 24px;
+
+}
+
+.inputPassword {
+    margin-left:  80px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+
+
+}
+
+
+
+.profileNavigationList {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-around;
+}
+
+.profileNavigationItem{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 400px;
+    font-size: 16px;
+    line-height: 19px;
+}
+
+.linkItem {
+    text-decoration: none;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+
+}
+
+.nav {
+    width: 25%;
+    text-align: left;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    max-width: 1160px;
+    margin: 120px auto;
+    /* height: calc(100vh - 88px - 40px); */
+    justify-content: flex-start;
+  
+}
+
+.footerLine {
+    display: flex;
+
+}
+
+.link {
+    display: block;
+    height: 64px;
+    color: #8585AD;
+    text-decoration: none;
+}
+
+.exitLink {
+    display: block;
+    height: 64px;
+    color: #8585AD;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.activeLink {
+    display: block;
+    height: 64px;
+    color: #F2F2F3;
+}
+
+.text {
+    color: #8585AD;
+
+    opacity: 0.4;
+}
+
+.input {
+    /* width: 100%; */
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row-reverse;
+}

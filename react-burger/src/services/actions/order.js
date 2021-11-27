@@ -1,54 +1,45 @@
-import {sendOrderToServer} from "../api";
-
+import {  sendOrderToServer} from "../api";
+import {toast} from "react-toastify";
 
 export const ORDER_CONFIRMATION_SUCCESS = "ORDER_CONFIRMATION_SUCCESS";
 export const ORDER_CONFIRMATION_ERROR = "ORDER_CONFIRMATION_ERROR";
 export const ORDER_CONFIRMATION_REQUEST = "ORDER_CONFIRMATION_REQUEST";
-export const CLOSE_ORDER_MODAL="CLOSE_ORDER_MODAL";
+export const CLOSE_ORDER_MODAL = "CLOSE_ORDER_MODAL";
 
 export function pushOrder(order) {
 
-    return function (dispatch) {
+    return async function (dispatch) {
 
         dispatch({
             type: ORDER_CONFIRMATION_REQUEST
         });
 
-        sendOrderToServer(order)
-            .then((res) => {
+        try {
+            const res = await sendOrderToServer(order);
+            //const result = await checkResponse(res);
 
-                if (res.ok) {
-                    return res.json();
-                }
-
-                return Promise.reject(`Ошибка ${res.status}`);
-
-            })
-            .then((data) => {
-
-                if (data.success) {
-
-                    dispatch({
-                        type: ORDER_CONFIRMATION_SUCCESS,
-                        result: {
-                            name: data.name,
-                            order: {number: data.order.number},
-                            success: data.success
-                        }
-                    })
-
-                } else {
-                    return Promise.reject(`Не удалось подтвердить заказ.`);
+            dispatch({
+                type: ORDER_CONFIRMATION_SUCCESS,
+                result: {
+                    name: res.name,
+                    order: {number: res.order.number},
+                    success: res.success
                 }
             })
-            .catch((e) => {
-                dispatch({
-                    type: ORDER_CONFIRMATION_ERROR,
-                    result: {
-                        errorMsg: e
-                    }
-                })
-            });
+
+            toast.success(`Заказ ${res.order.number}  успешно зарегистрирован в системе!`);
+
+        } catch (e) {
+
+            dispatch({
+                type: ORDER_CONFIRMATION_ERROR,
+                result: {
+                    errorMsg: e
+                }
+            })
+
+            toast.error("При попытке регистрации заказа произошла ошибка: " + e.message);
+        }
 
     }
 }

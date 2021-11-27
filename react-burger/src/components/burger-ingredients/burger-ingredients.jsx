@@ -5,10 +5,10 @@ import s from "./burger-ingredients.module.css"
 import {useDispatch, useSelector} from "react-redux";
 import {ingredientsSelectors} from "../../services/selectors/ingredients-list-selectors";
 import {useDrag} from "react-dnd";
-import {SHOW_CURRENT_INGREDIENT_MODAL} from "../../services/actions/current_ingedient";
 import {getBuns, getMains, getSauces} from "../../utils/utils";
 import {SET_CURRENT_TAB, SET_TAB_HEADERS} from "../../services/actions/ingredient-list";
-import {DRAG_DROP_TYPE, TAB_CAPTIONS} from "../../utils/const";
+import { DRAG_DROP_TYPE, TAB_CAPTIONS} from "../../utils/const";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const IngrTabs = () => {
     const dispatch = useDispatch();
@@ -69,15 +69,24 @@ const IngrTabs = () => {
 }
 
 const Ingredient = ({value}) => {
-    const dispatch = useDispatch();
 
     const [, dragRef] = useDrag({
         type: DRAG_DROP_TYPE.FROM_LIST_TO_CONSTRUCTOR,
         item: value
     });
 
+    const location = useLocation();
+
+    const navigate = useNavigate();
+
     const showModal = () => {
-        dispatch({type: SHOW_CURRENT_INGREDIENT_MODAL, value: value})
+
+        navigate(`/ingredients/${value._id}`, {
+            state: {
+                background: location
+            }
+        });
+
     }
 
     return (

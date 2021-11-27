@@ -7,9 +7,12 @@ import {ADD_INGREDIENT, MOVE_INGREDIENT, REMOVE_INGREDIENT} from "../../services
 import {useDrag, useDrop} from "react-dnd";
 import {AFTER_ADD_TO_CONSTRUCTOR, AFTER_REMOVE_FROM_CONSTRUCTOR} from "../../services/actions/ingredient-list";
 import {sumPrice} from "../../utils/utils";
-import {DRAG_DROP_TYPE, INGREDIENT_TYPES} from "../../utils/const";
+import {APP_ROUTS, DRAG_DROP_TYPE, INGREDIENT_TYPES} from "../../utils/const";
 import {pushOrder} from "../../services/actions/order";
 import {constructorSelectors} from "../../services/selectors/constructor-ingredients-selector";
+import {useNavigate} from "react-router-dom";
+import {authSelectors} from "../../services/selectors/auth-selector";
+import {toast} from "react-toastify";
 
 
 const Bun = (props) => {
@@ -134,10 +137,12 @@ const OrderIngredient = ({elem, index}) => {
     )
 }
 
-
 const BurgerConstructor = () => {
 
-    const orderBody = useSelector(constructorSelectors.orderBody());
+    const orderBody = useSelector(constructorSelectors.orderBody);
+
+    const userIsAuth = useSelector(authSelectors.isAuth);
+
     const dispatch = useDispatch();
 
     const currentBun = orderBody.bun;
@@ -151,8 +156,18 @@ const BurgerConstructor = () => {
         bunDisplayPrice = currentBun.price;
     }
 
+    const navigate = useNavigate();
+
     const sendOrder = () => {
-        dispatch(pushOrder(orderBody));
+
+       if (!userIsAuth) {
+           toast.info("Для регистрации заказа необходимо зайти в систему!");
+           navigate(APP_ROUTS.LOGIN);
+       }
+       else {
+           toast.info("Регистрируем заказ!");
+           dispatch(pushOrder(orderBody));
+       }
     }
 
     const fillIngrs = () => {
