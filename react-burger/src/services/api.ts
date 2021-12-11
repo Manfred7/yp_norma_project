@@ -13,14 +13,22 @@ import {
 
 import {saveTokensToStorage} from "../utils/utils";
 import {TOKENS} from "../utils/const";
+import {
+    IIngredient,
+    ILoginResponse,
+    IOrderBody,
+    IPasswordResetParams,
+    IUserInfo
 
-export const checkResponse = (res) => {
-    return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+} from "../utils/types";
+
+export const checkResponse = async <T>(res: Response): Promise<T> => {
+    return res.ok ? res.json() as Promise<T> : res.json().then((err: string) => Promise.reject(err));
 };
 
-export const refreshToken = () => {
+export const refreshToken = async () => {
 
-    const refreshToken = localStorage.getItem(TOKENS.REFRESH);
+    const refreshToken: string = localStorage.getItem(TOKENS.REFRESH) as string;
 
     return fetch(`${URL_BASE}${URL_POST_TOKEN}`, {
         method: "POST",
@@ -30,43 +38,48 @@ export const refreshToken = () => {
         body: JSON.stringify({
             token: refreshToken,
         }),
-    }).then(checkResponse);
+    })
 };
 
-export const retriableFetch = async (url, options = {}) => {
+export const retriableFetch = async <T>(url: string, options: RequestInit): Promise<T | undefined> => {
 
-    try {
-        const res = await fetch(url, options);
-        const result = await checkResponse(res);
+        try {
+            const res = await fetch(url, options);
+            return checkResponse<T>(res);
 
-        return result;
-    } catch (err) {
+        } catch (err) {
 
-        if (err.message === "jwt expired") {
+            if ((err instanceof Error) && (err.message === "jwt expired")) {
 
-            const refreshData = await refreshToken();
+                const refreshData = await refreshToken();
+                const data = await checkResponse<ILoginResponse>(refreshData);
 
-            saveTokensToStorage(refreshData);
+                saveTokensToStorage(data);
 
-            options.headers.authorization = refreshData.accessToken;
-            const res = await fetch(url, options); // повторяем оригинальный запрос с оригинальными options (+ дополнительным хедером)
-            return await checkResponse(res); // если все равно проваливаемся -- значит не судьба :/
-        } else {
-            throw err;
+                if ((options) && (options.headers instanceof Headers)) {
+                    options.headers.set('authorization', data.accessToken);
+                }
+
+                const res = await fetch(url, options); // повторяем оригинальный запрос с оригинальными options (+ дополнительным хедером)
+                return checkResponse<T>(res);
+            } else {
+
+                throw err;
+            }
         }
     }
-};
+;
 
 export const loadIngredientsData = async () => {
     return await fetch(`${URL_BASE}${URL_INGREDIENTS}`)
 }
 
-export const sendOrderToServer = async (order) => {
+export const sendOrderToServer = async <T>(order: IOrderBody) => {
 
-    const mainsAndSaucesIds = order.mainsAndSauces.map((val) => val._id);
-    const ingredients = [order.bun._id, ...mainsAndSaucesIds];
+    const mainsAndSaucesIds = order.mainsAndSauces.map((val: IIngredient) => val._id);
+    const ingredients = [order.bun?._id, ...mainsAndSaucesIds];
 
-    return await retriableFetch(`${URL_BASE}${URL_POST_ORDER}`,
+    return await retriableFetch<T>(`${URL_BASE}${URL_POST_ORDER}`,
         {
             method: "POST",
             headers: {
@@ -77,7 +90,7 @@ export const sendOrderToServer = async (order) => {
         })
 }
 
-export const registerUserOnServer = async (userInfo) => {
+export const registerUserOnServer = async (userInfo: IUserInfo) => {
 
     return await fetch(`${URL_BASE}${URL_POST_REGISTER}`,
         {
@@ -95,7 +108,7 @@ export const registerUserOnServer = async (userInfo) => {
         })
 }
 
-export const loginToServer = async (userInfo) => {
+export const loginToServer = async (userInfo: IUserInfo) => {
 
     return await fetch(`${URL_BASE}${URL_POST_LOGIN}`,
         {
@@ -113,7 +126,7 @@ export const loginToServer = async (userInfo) => {
         })
 }
 
-export const passwordForgotRequest = async (email) => {
+export const passwordForgotRequest = async (email: string) => {
 
     return await fetch(`${URL_BASE}${URL_PASSWORD_RESET_FORGOT}`,
         {
@@ -131,7 +144,7 @@ export const passwordForgotRequest = async (email) => {
         })
 }
 
-export const passwordResetRequest = async (userInfo) => {
+export const passwordResetRequest = async (userInfo: IPasswordResetParams) => {
 
     return await fetch(`${URL_BASE}${URL_PASSWORD_RESET}`,
         {
@@ -150,7 +163,7 @@ export const passwordResetRequest = async (userInfo) => {
 
 }
 
-export const logoutFromServer = async (token) => {
+export const logoutFromServer = async (token: string) => {
 
     return await fetch(`${URL_BASE}${URL_POST_LOGOUT}`,
         {
@@ -162,7 +175,7 @@ export const logoutFromServer = async (token) => {
         })
 }
 
-export const refreshTokenOnServer = async (refreshToken) => {
+export const refreshTokenOnServer = async (refreshToken: string) => {
     const token = {refreshToken};
 
     return await fetch(`${URL_BASE}${URL_POST_TOKEN}`,
@@ -175,11 +188,11 @@ export const refreshTokenOnServer = async (refreshToken) => {
         })
 }
 
-export const getUserInfo = async () => {
+export const getUserInfo = async <T>() => {
 
     const token = localStorage.getItem(TOKENS.ACCESS);
 
-    return await retriableFetch(`${URL_BASE}${URL_USER_INFO}`, {
+    return await retriableFetch<T>(`${URL_BASE}${URL_USER_INFO}`, {
 
         method: "GET",
         mode: 'cors',
@@ -196,9 +209,9 @@ export const getUserInfo = async () => {
     })
 }
 
-export const updateUserInfo = async (userInfo) => {
+export const updateUserInfo = async <T>(userInfo: IUserInfo): Promise<T | undefined> => {
 
-    return await retriableFetch(`${URL_BASE}${URL_USER_INFO}`,
+    return await retriableFetch<T>(`${URL_BASE}${URL_USER_INFO}`,
         {
             method: "PATCH",
             headers: {

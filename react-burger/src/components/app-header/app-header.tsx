@@ -3,14 +3,17 @@ import React from 'react';
 import s from "./app-header.module.css"
 import {NavLink} from "react-router-dom";
 import {APP_ROUTS} from "../../utils/const";
+import {TNavLinkClassNameParam} from "../../utils/types";
 
 const AppHeader = () => {
 
     const getTextClass = () => " text text_type_main-default pl-2 pt-2";
 
-    const navLinkClassName = ({isActive}) => {
 
-        const cn = isActive ? s.activeLink : s.linkItem;
+
+    const navLinkClassName = (param:TNavLinkClassNameParam) :string=> {
+
+        const cn = param.isActive ? s.activeLink : s.linkItem;
         return cn + getTextClass();
     }
 

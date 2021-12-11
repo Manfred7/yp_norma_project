@@ -10,12 +10,12 @@ import { doUserResetPasswordOnServer} from "../services/actions/auth";
 const ResetPasswordPage = () => {
 
     const [passwordValue, setPasswordValue] = React.useState('')
-    const onPasswordValueChange = e => {
+    const onPasswordValueChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setPasswordValue(e.target.value)
     }
 
     const [emailCodeValue, setEmailCodeValue] = React.useState('')
-    const onEmailCodeChange = e => {
+    const onEmailCodeChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setEmailCodeValue(e.target.value)
     }
 
@@ -25,7 +25,7 @@ const ResetPasswordPage = () => {
     const goToNextStep = () => {
         navigate(APP_ROUTS.LOGIN);
     }
-    const sendResetPassword = (e) => {
+    const sendResetPassword = (e:React.FormEvent) => {
         e.preventDefault();
 
         const userInfo = {

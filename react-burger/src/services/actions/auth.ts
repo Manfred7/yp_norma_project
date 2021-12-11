@@ -9,6 +9,14 @@ import {
 import {toast} from "react-toastify";
 import {clearStorage, saveTokensToStorage} from "../../utils/utils";
 import {TOKENS} from "../../utils/const";
+import {
+    IPasswordResetParams,
+    IUserInfo,
+    TFunc,
+    ILoginResponse,
+    IMyCustomResponse,
+    IUserInfoResponse, IUpdateUserInfoResponse, ILogoutFromServerResponse
+} from "../../utils/types";
 
 export const REGISTRATION_REQUEST = 'REGISTRATION_REQUEST';
 export const REGISTRATION_SUCCESS = 'REGISTRATION_SUCCESS';
@@ -42,22 +50,21 @@ export const UPDATE_USER_INFO_REQUEST = 'UPDATE_USER_INFO_REQUEST';
 export const UPDATE_USER_INFO_SUCCESS = 'UPDATE_USER_INFO_SUCCESS';
 export const UPDATE_USER_INFO_ERROR = 'UPDATE_USER_INFO_ERROR';
 
-export function doRegistrationUserOnServer(userInfo, goToNextStep) {
+export function doRegistrationUserOnServer(userInfo: IUserInfo, goToNextStep: TFunc) {
 
-    return async function (dispatch) {
+    return async function (dispatch: any) {
         dispatch({
             type: REGISTRATION_REQUEST
         });
 
         try {
             const res = await registerUserOnServer(userInfo);
-            const data = await checkResponse(res);
+            const data = await checkResponse<ILoginResponse>(res);
 
             saveTokensToStorage(data);
 
             dispatch({
                 type: REGISTRATION_SUCCESS,
-                //      success : data.success,
                 email: data.user.email,
                 name: data.user.name,
                 accessToken: data.accessToken,
@@ -69,7 +76,7 @@ export function doRegistrationUserOnServer(userInfo, goToNextStep) {
 
             goToNextStep();
 
-        } catch (e) {
+        } catch (e: any) {
             toast.error("При попытке регистрации произошла ошибка: " + e.message);
 
             dispatch({
@@ -77,15 +84,14 @@ export function doRegistrationUserOnServer(userInfo, goToNextStep) {
                 err_msg: e
             });
 
-
         }
 
     };
 }
 
-export function doLoginUserOnServer(userInfo) {
+export function doLoginUserOnServer(userInfo: IUserInfo) {
 
-    return async function (dispatch) {
+    return async function (dispatch: any) {
 
         dispatch({
             type: LOGIN_REQUEST
@@ -93,8 +99,7 @@ export function doLoginUserOnServer(userInfo) {
 
         try {
             const result = await loginToServer(userInfo);
-            const data = await checkResponse(result);
-
+            const data = await checkResponse(result) as ILoginResponse;
 
             saveTokensToStorage(data);
 
@@ -109,7 +114,7 @@ export function doLoginUserOnServer(userInfo) {
 
             toast.success(data.user.name + " Вы успешно зашли в систему! ");
 
-        } catch (e) {
+        } catch (e: any) {
 
             dispatch({
                 type: LOGIN_ERROR,
@@ -122,10 +127,10 @@ export function doLoginUserOnServer(userInfo) {
     };
 }
 
-export function doUserForgotPasswordOnServer(email, nextStep) {
+export function doUserForgotPasswordOnServer(email: string, nextStep: TFunc) {
 
 
-    return async function (dispatch) {
+    return async function (dispatch: any) {
 
         dispatch({
             type: RESET_PASSWORD_FORGOT_REQUEST
@@ -133,7 +138,7 @@ export function doUserForgotPasswordOnServer(email, nextStep) {
         try {
 
             const res = await passwordForgotRequest(email);
-            const result = await checkResponse(res);
+            const result = await checkResponse<IMyCustomResponse>(res);
 
             dispatch({
                 type: RESET_PASSWORD_FORGOT_SUCCESS,
@@ -143,7 +148,7 @@ export function doUserForgotPasswordOnServer(email, nextStep) {
 
             toast.success("Код для восстановления пароля отправлен на почту: " + email);
             nextStep();
-        } catch (e) {
+        } catch (e: any) {
 
             toast.error("При запросе кода для сброса пароля произошла ошибка!" + e.message);
             dispatch({
@@ -156,9 +161,9 @@ export function doUserForgotPasswordOnServer(email, nextStep) {
     };
 }
 
-export function doUserResetPasswordOnServer(userInfo, goToNextStep) {
+export function doUserResetPasswordOnServer(userInfo: IPasswordResetParams, goToNextStep: TFunc) {
 
-    return async function (dispatch) {
+    return async function (dispatch: any) {
 
         dispatch({
             type: RESET_PASSWORD_RESET_REQUEST
@@ -167,7 +172,7 @@ export function doUserResetPasswordOnServer(userInfo, goToNextStep) {
         try {
 
             const res = await passwordResetRequest(userInfo);
-            const result = await checkResponse(res);
+            const result = await checkResponse<IMyCustomResponse>(res);
 
             dispatch({
                 type: RESET_PASSWORD_RESET_SUCCESS,
@@ -179,7 +184,7 @@ export function doUserResetPasswordOnServer(userInfo, goToNextStep) {
 
             goToNextStep();
 
-        } catch (e) {
+        } catch (e: any) {
 
 
             dispatch({
@@ -195,7 +200,7 @@ export function doUserResetPasswordOnServer(userInfo, goToNextStep) {
 
 export function doGetUserInfo() {
 
-    return async function (dispatch) {
+    return async function (dispatch: any) {
 
         dispatch({
             type: GET_USER_INFO_REQUEST
@@ -203,7 +208,7 @@ export function doGetUserInfo() {
 
         try {
 
-            const result = await getUserInfo();
+            const result = await getUserInfo<IUserInfoResponse>() as IUserInfoResponse;
 
             dispatch({
                 type: GET_USER_INFO_SUCCESS,
@@ -212,7 +217,7 @@ export function doGetUserInfo() {
                 name: result.user.name
             })
 
-        } catch (e) {
+        } catch (e: any) {
 
 
             dispatch({
@@ -227,9 +232,9 @@ export function doGetUserInfo() {
 
 }
 
-export function doUpdateUserInfo(userInfo) {
+export function doUpdateUserInfo(userInfo: IUserInfo) {
 
-    return async function (dispatch) {
+    return async function (dispatch: any) {
 
         dispatch({
             type: UPDATE_USER_INFO_REQUEST
@@ -237,9 +242,9 @@ export function doUpdateUserInfo(userInfo) {
 
         try {
 
-            const result = await updateUserInfo(userInfo);
+            const result = await updateUserInfo<IUpdateUserInfoResponse>(userInfo) as IUpdateUserInfoResponse ;
 
-            dispatch({
+             dispatch({
                 type: UPDATE_USER_INFO_SUCCESS,
                 requestSuccess: result.success,
                 email: result.user.email,
@@ -249,7 +254,7 @@ export function doUpdateUserInfo(userInfo) {
             toast.success("Данные успешно изменены!");
 
 
-        } catch (e) {
+        } catch (e: any) {
 
 
             dispatch({
@@ -266,7 +271,7 @@ export function doUpdateUserInfo(userInfo) {
 
 export function doLogoutFromServer() {
 
-    return async function (dispatch) {
+    return async function (dispatch: any) {
 
         dispatch({
             type: LOGOUT_REQUEST
@@ -274,9 +279,9 @@ export function doLogoutFromServer() {
 
         try {
 
-            const token = localStorage.getItem(TOKENS.REFRESH);
+            const token: string = localStorage.getItem(TOKENS.REFRESH) as string;
             const result = await logoutFromServer(token);
-            const data = await checkResponse(result);
+            const data = await checkResponse<ILogoutFromServerResponse>(result);
 
             dispatch({
                 type: LOGOUT_SUCCESS,
@@ -288,7 +293,7 @@ export function doLogoutFromServer() {
 
             toast.success("Вы успешно вышли из системы: " + data.message);
 
-        } catch (e) {
+        } catch (e: any) {
 
             dispatch({
                 type: LOGOUT_ERROR,

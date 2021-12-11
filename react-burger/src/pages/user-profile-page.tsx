@@ -6,6 +6,7 @@ import {APP_ROUTS} from "../utils/const";
 import {doLogoutFromServer, doUpdateUserInfo, END_EDIT_USER_INFO, START_EDIT_USER_INFO} from "../services/actions/auth";
 import {useDispatch, useSelector} from "react-redux";
 import {authSelectors} from "../services/selectors/auth-selector";
+import {TNavLinkClassNameParam} from "../utils/types";
 
 export const EditUserProfileForm = () => {
 
@@ -25,27 +26,27 @@ export const EditUserProfileForm = () => {
 
     const [passwordValue, setPasswordValue] = React.useState('')
 
-    const onPasswordValueChange = e => {
+    const onPasswordValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPasswordValue(e.target.value);
         SetUserInfoChanged();
     }
 
     const [userNameValue, setUserNameValue] = React.useState(userName);
 
-    const onUserNameValueChange = e => {
+    const onUserNameValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserNameValue(e.target.value);
 
         SetUserInfoChanged();
     }
 
     const [emailValue, setEmailValue] = React.useState(userEmail);
-    const onEmailChange = e => {
+    const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmailValue(e.target.value);
 
         SetUserInfoChanged();
     }
 
-    const cancelUpdate = (e) => {
+    const cancelUpdate = (e: React.FormEvent) => {
         e.preventDefault();
 
         setEmailValue(userEmail);
@@ -59,7 +60,7 @@ export const EditUserProfileForm = () => {
         }
     }
 
-    const updateUserInfo = (e) => {
+    const updateUserInfo = (e: React.FormEvent) => {
 
         e.preventDefault();
 
@@ -72,7 +73,6 @@ export const EditUserProfileForm = () => {
         dispatch(doUpdateUserInfo(userInfo));
 
     }
-
 
     return (
 
@@ -127,11 +127,7 @@ export const EditUserProfileForm = () => {
                 </Button>
             </div>
             }
-
-
         </form>
-
-
     )
 }
 
@@ -139,15 +135,15 @@ const UserProfileNavigation = () => {
     const dispatch = useDispatch();
     const isProfileEditRoute = useMatch(APP_ROUTS.PROFILE);
 
-    const logoutClick = (e) => {
+    const logoutClick = (e: React.FormEvent) => {
         e.preventDefault();
         dispatch(doLogoutFromServer());
     }
     const getTextClass = () => " text text_type_main-medium";
 
-    const navLinkClassName = ({isActive}) => {
+    const navLinkClassName = (param: TNavLinkClassNameParam): string => {
 
-        const cn = isActive ? s.activeLink : s.link;
+        const cn = param.isActive ? s.activeLink : s.link;
         return cn + getTextClass();
     }
 
@@ -180,9 +176,9 @@ const UserProfileNavigation = () => {
                     </div>
                     {isProfileEditRoute &&
 
-                    <p className={s.text + ' text text_type_main-default mt-20'}>
-                        В этом разделе вы можете изменить свои персональные данные
-                    </p>
+                        <p className={s.text + ' text text_type_main-default mt-20'}>
+                            В этом разделе вы можете изменить свои персональные данные
+                        </p>
                     }
 
                 </div>

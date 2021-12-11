@@ -1,15 +1,20 @@
-import React from 'react';
+import React, {FC, ReactPortal} from 'react';
 import s from "./modal.module.css"
 import ReactDOM from "react-dom";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-
-import PropTypes from "prop-types";
+import {TFunc} from "../../utils/types";
 
 const ESCAPE = 'Escape';
-const modalRoot = document.getElementById("react-modals");
+const modalRoot: Element = document.getElementById("react-modals") as Element;
 
-const Modal = (props) => {
+interface IModalProps {
+    header?: string;
+    onClose: TFunc;
+    isOpen: boolean;
+}
+
+const Modal: FC<IModalProps> = (props) => {
 
     const {children, header, onClose, isOpen} = props;
 
@@ -34,7 +39,7 @@ const Modal = (props) => {
 
 
     if (!props.isOpen)
-        return '';
+        return null
 
     return ReactDOM.createPortal(
         <>
@@ -44,7 +49,7 @@ const Modal = (props) => {
                     <h3 className={s.caption + ' text text_type_main-large'}>
                         {header}
                     </h3>
-                    <CloseIcon onClick={onClose} />
+                    <CloseIcon type={"primary"} onClick={onClose}/>
                 </div>
                 <div className={s.children}>{children}</div>
             </div>
@@ -52,11 +57,5 @@ const Modal = (props) => {
         , modalRoot)
 }
 
-Modal.propTypes = {
-    children: PropTypes.element.isRequired,
-    header: PropTypes.string,
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
-};
 
 export default Modal;

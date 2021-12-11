@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from "./ingredient-details.module.css"
+import {IIngredient} from "../../utils/types";
 
-const IngredientDetails = ({details}) => {
+interface  IIngredientDetailsProps {
+    details:IIngredient
+}
+
+const IngredientDetails: FC<IIngredientDetailsProps>= ({details}) => {
 
     return (
         <div className={s.mainContainer}>
@@ -22,6 +27,8 @@ const IngredientDetails = ({details}) => {
     )
 
 };
+
+
 
 
 export default IngredientDetails;

@@ -1,4 +1,5 @@
-import {loadIngredientsData} from "../api";
+import {checkResponse, loadIngredientsData} from "../api";
+import {IIngredientsDataResponse} from "../../utils/types";
 
 export const GET_ITEMS_REQUEST = 'GET_ITEMS_REQUEST';
 export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
@@ -9,40 +10,9 @@ export const AFTER_ADD_TO_CONSTRUCTOR = "AFTER_ADD_TO_CONSTRUCTOR";
 export const AFTER_REMOVE_FROM_CONSTRUCTOR = "AFTER_REMOVE_FROM_CONSTRUCTOR";
 export const RESET_INGREDIENT_LIST = "RESET_INGREDIENT_LIST";
 
-/*
 export function getIngredientsData() {
 
-    return function (dispatch) {
-        dispatch({
-            type: GET_ITEMS_REQUEST
-        });
-        loadIngredientsData().then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка ${res.status}`);
-        }).then(data => {
-                dispatch({
-                    type: GET_ITEMS_SUCCESS,
-                    ingredientsList: data.data
-                })
-            }
-        ).catch(e => {
-            dispatch({
-                type: GET_ITEMS_ERROR
-            });
-        });
-    };
-}*/
-
-
-const checkResponse = (res) => {
-    return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
-};
-
-export function getIngredientsData() {
-
-    return async function (dispatch) {
+    return async function (dispatch:any) {
 
         dispatch({
             type: GET_ITEMS_REQUEST
@@ -51,7 +21,7 @@ export function getIngredientsData() {
         try {
 
             const resData = await loadIngredientsData();
-            const result = await checkResponse(resData);
+            const result = await checkResponse<IIngredientsDataResponse>(resData);
 
             dispatch({
                 type: GET_ITEMS_SUCCESS,

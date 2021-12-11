@@ -1,6 +1,6 @@
-import React, {useEffect, useRef} from 'react';
+import React, {FC, useEffect, useRef} from 'react';
 import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
-import {IngredientType} from "../../utils/types.js"
+import {IIngredient} from "../../utils/types"
 import s from "./burger-ingredients.module.css"
 import {useDispatch, useSelector} from "react-redux";
 import {ingredientsSelectors} from "../../services/selectors/ingredients-list-selectors";
@@ -18,7 +18,7 @@ const IngrTabs = () => {
     const mainElement = useSelector(ingredientsSelectors.tabHeadersElements).mainElement;
     const current = useSelector(ingredientsSelectors.currentTab);
 
-    const setCurrent = (value) => {
+    const setCurrent = (value:string) => {
         dispatch({type: SET_CURRENT_TAB, value: value});
 
         let scrollToElement = null;
@@ -68,7 +68,12 @@ const IngrTabs = () => {
     )
 }
 
-const Ingredient = ({value}) => {
+interface  IIngredientProps{
+    key:string;
+    value:IIngredient
+}
+const Ingredient : FC<IIngredientProps> = ({value}) => {
+
 
     const [, dragRef] = useDrag({
         type: DRAG_DROP_TYPE.FROM_LIST_TO_CONSTRUCTOR,
@@ -111,9 +116,6 @@ const Ingredient = ({value}) => {
         </li>)
 }
 
-Ingredient.propTypes = {
-    value: IngredientType.isRequired
-};
 
 const BurgerIngredients = () => {
 
@@ -121,10 +123,10 @@ const BurgerIngredients = () => {
     const currentTab = useSelector(ingredientsSelectors.currentTab);
     const sourceIngredients = useSelector(ingredientsSelectors.ingredientsList);
 
-    const refBuns = useRef();
-    const refMains = useRef();
-    const refSauces = useRef();
-    const refContainer = useRef();
+    const refBuns = useRef<HTMLDivElement>(null);
+    const refMains = useRef<HTMLDivElement>(null);
+    const refSauces = useRef<HTMLDivElement>(null);
+    const refContainer = useRef<HTMLDivElement>(null);
 
     const buns = getBuns(sourceIngredients);
     const mains = getMains(sourceIngredients);
@@ -190,33 +192,33 @@ const BurgerIngredients = () => {
                 <div ref={refBuns}>
                     <h3 className={'text text_type_main-medium mt-5 '}>{TAB_CAPTIONS.BUN}</h3>
                     <ul className={s.catalogList}>
-                        {buns.map((elem => {
+                        {buns.map((elem:IIngredient) => {
                             return (
                                 <Ingredient key={elem._id} value={elem}/>
                             )
-                        }))}
+                        })}
                     </ul>
                 </div>
 
                 <div ref={refSauces}>
                     <h3 className={'text text_type_main-medium mt-5 '}>{TAB_CAPTIONS.SAUCE}</h3>
                     <ul className={s.catalogList}>
-                        {sauces.map((elem => {
+                        {sauces.map((elem:IIngredient) => {
                             return (
                                 <Ingredient key={elem._id} value={elem}/>
                             )
-                        }))}
+                        })}
                     </ul>
                 </div>
 
                 <div ref={refMains}>
                     <h3 className={'text text_type_main-medium mt-5 '}>{TAB_CAPTIONS.MAINS}</h3>
                     <ul className={s.catalogList}>
-                        {mains.map((elem => {
+                        {mains.map((elem:IIngredient) => {
                             return (
                                 <Ingredient key={elem._id} value={elem}/>
                             )
-                        }))}
+                        })}
                     </ul>
                 </div>
             </div>

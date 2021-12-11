@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {FC} from 'react';
 import { useSelector} from "react-redux";
 import IngredientDetails from "../components/ingredient-details/ingredient-details";
 import { useParams} from "react-router-dom";
 import {ingredientsSelectors} from "../services/selectors/ingredients-list-selectors";
 import s from "./ingredient-page.module.css";
 
-const IngredientPage = () => {
+const IngredientPage :FC =() => {
 
     const {id} = useParams();
 

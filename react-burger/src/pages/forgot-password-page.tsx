@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {FormEvent, useEffect} from 'react';
 import s from "./forgot-password-page.module.css";
 import {Button, Input} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
@@ -9,8 +9,9 @@ import {useDispatch} from "react-redux";
 const ForgotPasswordPage = () => {
 
     const [emailValue, setEmailValue] = React.useState('')
-    const onEmailChange = e => {
-        setEmailValue(e.target.value)
+    const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        setEmailValue(e.currentTarget.value)
     }
 
     const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const ForgotPasswordPage = () => {
         navigate(APP_ROUTS.RESET_PASSWORD);
     }
 
-    const sendForgotPassword = (e) => {
+    const sendForgotPassword = (e:FormEvent) => {
         e.preventDefault();
 
         dispatch(doUserForgotPasswordOnServer(emailValue, goToNextStep));
