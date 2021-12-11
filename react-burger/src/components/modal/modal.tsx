@@ -6,16 +6,15 @@ import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import {TFunc} from "../../utils/types";
 
 const ESCAPE = 'Escape';
-const modalRoot :Element = document.getElementById("react-modals") as Element;
+const modalRoot: Element = document.getElementById("react-modals") as Element;
 
 interface IModalProps {
-    header:string;
-    onClose:TFunc;
-    isOpen:boolean;
+    header?: string;
+    onClose: TFunc;
+    isOpen: boolean;
 }
-type TModalResult =  ReactPortal;
 
-const Modal :FC<IModalProps>= (props) :TModalResult  => {
+const Modal: FC<IModalProps> = (props) => {
 
     const {children, header, onClose, isOpen} = props;
 
@@ -40,7 +39,7 @@ const Modal :FC<IModalProps>= (props) :TModalResult  => {
 
 
     if (!props.isOpen)
-        return ReactDOM.createPortal(<> </>, modalRoot)
+        return null
 
     return ReactDOM.createPortal(
         <>
@@ -50,7 +49,7 @@ const Modal :FC<IModalProps>= (props) :TModalResult  => {
                     <h3 className={s.caption + ' text text_type_main-large'}>
                         {header}
                     </h3>
-                    <CloseIcon type={"primary"} onClick={onClose} />
+                    <CloseIcon type={"primary"} onClick={onClose}/>
                 </div>
                 <div className={s.children}>{children}</div>
             </div>

@@ -46,7 +46,7 @@ const BurgerConstructorPage = () => {
                 </div>
 
                 {order.success &&
-                <Modal isOpen={orderModalIsVisible} header={""} onClose={handleCloseOrderModal}>
+                <Modal isOpen={orderModalIsVisible}  onClose={handleCloseOrderModal}>
                     <OrderDetails orderId={order.number}/>
                 </Modal>
                 }

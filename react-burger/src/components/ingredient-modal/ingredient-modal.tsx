@@ -10,7 +10,7 @@ import {IIngredient} from "../../utils/types";
 const IngredientModal = () => {
 
     const {id} = useParams();
-    let currentIngredient = useSelector(ingredientsSelectors.item(id)) as IIngredient;
+    const currentIngredient = useSelector(ingredientsSelectors.item(id)) as IIngredient;
 
     const navigate = useNavigate()
 

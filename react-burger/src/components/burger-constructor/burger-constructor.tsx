@@ -139,7 +139,6 @@ const OrderIngredient:FC<TOrderIngredientPropsType>=(props) => {
                     <DragIcon type="primary"/>
                 </div>
                 <ConstructorElement
-                    type={undefined}
                     isLocked={false}
                     text={elem.name}
                     price={elem.price}

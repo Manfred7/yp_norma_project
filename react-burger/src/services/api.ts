@@ -28,7 +28,7 @@ export const checkResponse = async <T>(res: Response): Promise<T> => {
 
 export const refreshToken = async () => {
 
-    const refreshToken:string = localStorage.getItem(TOKENS.REFRESH) as string;
+    const refreshToken: string = localStorage.getItem(TOKENS.REFRESH) as string;
 
     return fetch(`${URL_BASE}${URL_POST_TOKEN}`, {
         method: "POST",
@@ -41,41 +41,40 @@ export const refreshToken = async () => {
     })
 };
 
-export const retriableFetch = async<T> (url: string, options: RequestInit) :Promise<T | undefined>  => {
+export const retriableFetch = async <T>(url: string, options: RequestInit): Promise<T | undefined> => {
 
-    try {
-        const res = await fetch(url, options);
-        return  checkResponse<T>(res);
+        try {
+            const res = await fetch(url, options);
+            return checkResponse<T>(res);
 
-    } catch (err: any) {
+        } catch (err) {
 
-        if (err instanceof Error) {
-            if (err.message === "jwt expired") {
+            if ((err instanceof Error) && (err.message === "jwt expired")) {
 
                 const refreshData = await refreshToken();
                 const data = await checkResponse<ILoginResponse>(refreshData);
 
                 saveTokensToStorage(data);
 
-                if (options) {
-                    (options.headers as Headers).set('authorization', data.accessToken);
+                if ((options) && (options.headers instanceof Headers)) {
+                    options.headers.set('authorization', data.accessToken);
                 }
 
                 const res = await fetch(url, options); // повторяем оригинальный запрос с оригинальными options (+ дополнительным хедером)
-                return  checkResponse<T>(res);
-            }
-        } else {
+                return checkResponse<T>(res);
+            } else {
 
-            throw err;
+                throw err;
+            }
         }
     }
-};
+;
 
 export const loadIngredientsData = async () => {
     return await fetch(`${URL_BASE}${URL_INGREDIENTS}`)
 }
 
-export const sendOrderToServer = async<T> (order: IOrderBody) => {
+export const sendOrderToServer = async <T>(order: IOrderBody) => {
 
     const mainsAndSaucesIds = order.mainsAndSauces.map((val: IIngredient) => val._id);
     const ingredients = [order.bun?._id, ...mainsAndSaucesIds];
@@ -189,7 +188,7 @@ export const refreshTokenOnServer = async (refreshToken: string) => {
         })
 }
 
-export const getUserInfo = async <T>()  => {
+export const getUserInfo = async <T>() => {
 
     const token = localStorage.getItem(TOKENS.ACCESS);
 
@@ -210,7 +209,7 @@ export const getUserInfo = async <T>()  => {
     })
 }
 
-export const updateUserInfo = async <T>(userInfo: IUserInfo) :Promise<T | undefined>=> {
+export const updateUserInfo = async <T>(userInfo: IUserInfo): Promise<T | undefined> => {
 
     return await retriableFetch<T>(`${URL_BASE}${URL_USER_INFO}`,
         {
