@@ -1,5 +1,4 @@
-import React, {useRef} from 'react';
-import PropTypes from "prop-types";
+import React, {FC, useRef} from 'react';
 import {ConstructorElement, DragIcon, Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import s from "./burger-constructor.module.css"
 import {useDispatch, useSelector} from "react-redux";
@@ -13,9 +12,26 @@ import {constructorSelectors} from "../../services/selectors/constructor-ingredi
 import {useNavigate} from "react-router-dom";
 import {authSelectors} from "../../services/selectors/auth-selector";
 import {toast} from "react-toastify";
+import {IOrderIngredient} from "../../utils/types";
 
+type TOrderIngredientPropsType = {
+    key: string;
+    elem: IOrderIngredient;
+    index: number;
+};
 
-const Bun = (props) => {
+type TConstructorSortItem = {
+    index:number;
+}
+
+interface IBunProps {
+    description: string;
+    image: string;
+    type?: 'top' | 'bottom';
+    price: number;
+}
+
+const Bun = (props: IBunProps) => {
 
     return (<div className={s.catalogItem}>
         <ConstructorElement
@@ -28,18 +44,14 @@ const Bun = (props) => {
     </div>)
 }
 
-Bun.propTypes = {
-    description: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired
-}
+const OrderIngredient:FC<TOrderIngredientPropsType>=(props) => {
 
-const OrderIngredient = ({elem, index}) => {
+    const {elem, index} = props;
+
     const dispatch = useDispatch();
-    const ref = useRef(null);
+    const ref = useRef<HTMLLIElement>(null);
 
-    const doRemoveIngredient = (item) => {
+    const doRemoveIngredient = (item: IOrderIngredient) => {
 
         dispatch({
             type: REMOVE_INGREDIENT,
@@ -52,7 +64,7 @@ const OrderIngredient = ({elem, index}) => {
         })
     }
 
-    const moveCard = (dragIndex, hoverIndex) => {
+    const moveCard = (dragIndex: number, hoverIndex: number) => {
 
         dispatch({
             type: MOVE_INGREDIENT,
@@ -62,10 +74,12 @@ const OrderIngredient = ({elem, index}) => {
 
     }
 
+
     const [, drop] = useDrop({
         accept: DRAG_DROP_TYPE.CONSTRUCTOR_SORT,
 
-        hover(item, monitor) {
+        hover(item:TConstructorSortItem
+              , monitor) {
 
             if (!ref.current) {
                 return;
@@ -115,7 +129,7 @@ const OrderIngredient = ({elem, index}) => {
     });
 
     const opacity = isDragging ? 0 : 1;
-    
+
     drag(drop(ref));
 
     return (
@@ -125,7 +139,7 @@ const OrderIngredient = ({elem, index}) => {
                     <DragIcon type="primary"/>
                 </div>
                 <ConstructorElement
-                    type={""}
+                    type={undefined}
                     isLocked={false}
                     text={elem.name}
                     price={elem.price}
@@ -160,35 +174,33 @@ const BurgerConstructor = () => {
 
     const sendOrder = () => {
 
+        if (!userIsAuth) {
+            toast.info("Для регистрации заказа необходимо зайти в систему!");
+            navigate(APP_ROUTS.LOGIN);
+        } else {
 
+            if (!currentBun) {
+                toast.error("Необходимо добавить булку!");
 
-       if (!userIsAuth) {
-           toast.info("Для регистрации заказа необходимо зайти в систему!");
-           navigate(APP_ROUTS.LOGIN);
-       }
-       else {
+                return
+            }
 
-           if (!currentBun){
-               toast.error("Необходимо добавить булку!");
-
-               return
-           }
-
-           toast.info("Регистрируем заказ!");
-           dispatch(pushOrder(orderBody));
-       }
+            toast.info("Регистрируем заказ!");
+            dispatch(pushOrder(orderBody));
+        }
     }
 
     const fillIngrs = () => {
 
-        return mainsAndSauces.map((elem, index) => {
+        return mainsAndSauces.map((elem: IOrderIngredient, index: number) => {
             return <OrderIngredient key={elem.innerId} elem={elem} index={index}/>
 
         })
     }
+
     const [, dropRef] = useDrop({
         accept: DRAG_DROP_TYPE.FROM_LIST_TO_CONSTRUCTOR,
-        drop(item) {
+        drop(item:IOrderIngredient) {
 
             if ((currentBun) && (item.type === INGREDIENT_TYPES.BUN)) {
 
@@ -238,12 +250,12 @@ const BurgerConstructor = () => {
         <section ref={dropRef}>
 
             {currentBun &&
-            <div className={s.bunContainer}>
-                <Bun key={1} description={currentBun.name + " (верх)"}
-                     image={currentBun.image}
-                     type={"top"}
-                     price={bunDisplayPrice}/>
-            </div>
+                <div className={s.bunContainer}>
+                    <Bun key={1} description={currentBun.name + " (верх)"}
+                         image={currentBun.image}
+                         type={"top"}
+                         price={bunDisplayPrice}/>
+                </div>
             }
 
             <ul className={s.scrollContainer + " " + s.catalogList}>
@@ -252,12 +264,12 @@ const BurgerConstructor = () => {
 
 
             {currentBun &&
-            <div className={s.bunContainer}>
-                <Bun key={2} description={currentBun.name + " (низ)"}
-                     image={currentBun.image}
-                     type={"bottom"}
-                     price={bunDisplayPrice}/>
-            </div>
+                <div className={s.bunContainer}>
+                    <Bun key={2} description={currentBun.name + " (низ)"}
+                         image={currentBun.image}
+                         type={"bottom"}
+                         price={bunDisplayPrice}/>
+                </div>
             }
 
             <div className={s.totalConstainer}>

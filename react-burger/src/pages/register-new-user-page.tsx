@@ -6,22 +6,23 @@ import {APP_ROUTS} from "../utils/const";
 
 import {useDispatch} from "react-redux";
 import {doRegistrationUserOnServer} from "../services/actions/auth";
+import {IUserInfo} from "../utils/types";
 
 const RegisterNewUserPage = () => {
 
 
     const [passwordValue, setPasswordValue] = React.useState('')
-    const onPasswordValueChange = e => {
+    const onPasswordValueChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setPasswordValue(e.target.value)
     }
 
     const [userNameValue, setUserNameValue] = React.useState('')
-    const onUserNameValueChange = e => {
+    const onUserNameValueChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setUserNameValue(e.target.value)
     }
 
     const [emailValue, setEmailValue] = React.useState('')
-    const onEmailChange = e => {
+    const onEmailChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setEmailValue(e.target.value)
     }
 
@@ -33,11 +34,11 @@ const RegisterNewUserPage = () => {
         navigate(APP_ROUTS.ROOT);
     }
 
-    const sendRegistrationRequest = (evt) => {
+    const sendRegistrationRequest = (evt:React.FormEvent) => {
 
          evt.preventDefault(); //отставить сабмитить
 
-        const userInfo = {
+        const userInfo:IUserInfo = {
             name: userNameValue,
             email: emailValue,
             password: passwordValue

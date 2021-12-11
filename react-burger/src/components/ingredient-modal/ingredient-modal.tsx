@@ -5,11 +5,12 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import Modal from "../modal/modal";
 import {ingredientsSelectors} from "../../services/selectors/ingredients-list-selectors";
+import {IIngredient} from "../../utils/types";
 
 const IngredientModal = () => {
 
     const {id} = useParams();
-    let currentIngredient = useSelector(ingredientsSelectors.item(id));
+    let currentIngredient = useSelector(ingredientsSelectors.item(id)) as IIngredient;
 
     const navigate = useNavigate()
 

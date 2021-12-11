@@ -1,7 +1,26 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from "./ingredient-details.module.css"
+import {IIngredient} from "../../utils/types";
 
-const IngredientDetails = ({details}) => {
+
+interface IMovieProps {
+    title: string;
+    label?: string;
+}
+export const Movie: FC<IMovieProps> = ({ title, label }) => {
+    return (
+        <div>
+            <h2>{title}</h2>
+            {label && <span>{label}</span>}
+        </div>
+    );
+};
+
+interface  IIngredientDetailsProps {
+    details:IIngredient
+}
+
+const IngredientDetails: FC<IIngredientDetailsProps>= ({details}) => {
 
     return (
         <div className={s.mainContainer}>
@@ -22,6 +41,8 @@ const IngredientDetails = ({details}) => {
     )
 
 };
+
+
 
 
 export default IngredientDetails;

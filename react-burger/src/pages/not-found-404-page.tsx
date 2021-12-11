@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from "./not-found-404-page.module.css"
 
-const NotFound404Page = () => {
+const NotFound404Page :FC= () => {
 
     return (
         <div className={s.mainContainer}>

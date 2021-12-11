@@ -87,10 +87,9 @@ const AppPages = () => {
 
     return (
         <>
-
             <Routes location={background ?? location}>
                 <Route path={APP_ROUTS.ROOT}
-                       exact={true}
+
                        element={
                            <ProtectedRoute>
                                <BurgerConstructorPage/>
@@ -98,16 +97,14 @@ const AppPages = () => {
                        }
                 />
 
-                <Route path={APP_ROUTS.INGREDIENT} exact={true}
+                <Route path={APP_ROUTS.INGREDIENT}
                        element={
                            <ProtectedRoute>
                                <IngredientPage/>
                            </ProtectedRoute>}
                 />
 
-
                 <Route path={APP_ROUTS.LOGIN}
-                       exact={true}
                        element={
                            <ProtectedRoute>
                                <LoginPage/>
@@ -116,7 +113,6 @@ const AppPages = () => {
                 />
 
                 <Route path={APP_ROUTS.REGISTRATION}
-                       exact={true}
                        element={
                            <ProtectedRoute>
                                <RegisterNewUserPage/>
@@ -125,7 +121,6 @@ const AppPages = () => {
                 />
 
                 <Route path={APP_ROUTS.FORGOT_PASSWORD}
-                       exact={true}
                        element={
                            <ProtectedRoute>
                                <ForgotPasswordPage/>
@@ -134,7 +129,6 @@ const AppPages = () => {
                 />
 
                 <Route path={APP_ROUTS.RESET_PASSWORD}
-                       exact={true}
                        element={
                            <ProtectedRoute>
                                <ResetPasswordPage/>

@@ -5,27 +5,29 @@ import {Link} from "react-router-dom";
 import {APP_ROUTS} from "../utils/const";
 import {useDispatch} from "react-redux";
 import {doLoginUserOnServer} from "../services/actions/auth";
+import {IUserInfo} from "../utils/types";
 
 const LoginPage = () => {
     const [passwordValue, setPasswordValue] = React.useState('')
-    const onPasswordValueChange = e => {
+    const onPasswordValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPasswordValue(e.target.value)
     }
 
     const [emailValue, setEmailValue] = React.useState('')
-    const onEmailChange = e => {
+    const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmailValue(e.target.value)
     }
 
     const dispatch = useDispatch();
 
-    const sendLoginRequest = (evt) => {
+    const sendLoginRequest = (evt: React.FormEvent) => {
 
         evt.preventDefault();
 
-        const userInfo = {
+        const userInfo: IUserInfo = {
             email: emailValue,
-            password: passwordValue
+            password: passwordValue,
+            name: ""
         }
 
         dispatch(doLoginUserOnServer(userInfo));
