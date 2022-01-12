@@ -3,7 +3,7 @@ import done from '../../images/done.svg'
 import s from './order-details.module.css'
 
 interface IOrderDetailsProps {
-    orderId: number;
+    orderId: string;
 }
 
 const OrderDetails: FC<IOrderDetailsProps> = (props) => {

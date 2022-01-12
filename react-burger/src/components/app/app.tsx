@@ -11,16 +11,21 @@ import UserProfilePage, {EditUserProfileForm} from "../../pages/user-profile-pag
 import IngredientPage from "../../pages/ingredient-page";
 import ForgotPasswordPage from "../../pages/forgot-password-page";
 import {APP_ROUTS, TOKENS} from "../../utils/const";
-import OrderListPage from "../../pages/order-list-page";
+import OrdersHistoryPage from "../../pages/orders-history-page";
 import {ToastContainer} from "react-toastify";
 
 import 'react-toastify/dist/ReactToastify.css';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/hooks";
 import {doGetUserInfo} from "../../services/actions/auth";
 import {ingredientsSelectors} from "../../services/selectors/ingredients-list-selectors";
 import {getIngredientsData} from "../../services/actions/ingredient-list";
 import IngredientModal from "../ingredient-modal/ingredient-modal";
 import ProtectedRoute from "../protected-route/protected-route";
+import FeedPage from "../../pages/feed-page";
+
+import OrderHistoryDetailPage, {THistoryDetailMode} from "../../pages/order-history-detail-page";
+import OrderHistoryDetailsModal from "./order-history-details-modal/order-history-details-modal";
+
 
 const App = () => {
 
@@ -38,10 +43,8 @@ const App = () => {
         const accessToken = localStorage.getItem(TOKENS.ACCESS);
 
         if (accessToken) {
-
             dispatch(doGetUserInfo());
         }
-
     }, [dispatch]);
 
     return (
@@ -97,7 +100,7 @@ const AppPages = () => {
                        }
                 />
 
-                <Route path={APP_ROUTS.INGREDIENT}
+                <Route path={APP_ROUTS.INGREDIENT_ID}
                        element={
                            <ProtectedRoute>
                                <IngredientPage/>
@@ -148,11 +151,37 @@ const AppPages = () => {
                                <EditUserProfileForm/>
                            }/>
 
-                    <Route path={APP_ROUTS.ORDERS_LIST}
+                    <Route path={APP_ROUTS.ORDERS_HISTORY}
                            element={
-                               <OrderListPage/>
+                               <OrdersHistoryPage/>
                            }/>
+
+
+
                 </Route>
+
+                <Route path={APP_ROUTS.ORDER_ID}
+                       element={
+                           <ProtectedRoute>
+                               <OrderHistoryDetailPage mode={THistoryDetailMode.userHistory}/>
+                           </ProtectedRoute>}
+                />
+
+                <Route path={APP_ROUTS.FEED_ID}
+                       element={
+                           <ProtectedRoute>
+                               <OrderHistoryDetailPage mode={THistoryDetailMode.feed}/>
+                           </ProtectedRoute>}
+                />
+                <Route path={APP_ROUTS.FEED}
+                       element={
+                           <FeedPage/>
+                       }>
+
+
+                </Route>
+
+
 
                 <Route path={APP_ROUTS.NOT_FOUND} element={<NotFound404Page/>}/>
 
@@ -160,9 +189,21 @@ const AppPages = () => {
 
             {background && (
                 <Routes>
-                    <Route path={APP_ROUTS.INGREDIENT}
+                    <Route path={APP_ROUTS.INGREDIENT_ID}
                            element={
                                <IngredientModal/>
+                           }
+                    />
+
+                    <Route path={APP_ROUTS.FEED_ID}
+                           element={
+                               <OrderHistoryDetailsModal/>
+                           }
+                    />
+
+                    <Route path={APP_ROUTS.ORDER_ID}
+                           element={
+                               <OrderHistoryDetailsModal/>
                            }
                     />
                 </Routes>

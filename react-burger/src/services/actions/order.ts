@@ -1,15 +1,46 @@
-import {  sendOrderToServer} from "../api";
+import {sendOrderToServer} from "../api";
 import {toast} from "react-toastify";
-import {IOrderBody, IOrderRegistrationResponse} from "../../utils/types";
+import {IOrderBody, IOrderRegistrationResponse, TAppThunk} from "../../utils/types";
 
-export const ORDER_CONFIRMATION_SUCCESS = "ORDER_CONFIRMATION_SUCCESS";
-export const ORDER_CONFIRMATION_ERROR = "ORDER_CONFIRMATION_ERROR";
-export const ORDER_CONFIRMATION_REQUEST = "ORDER_CONFIRMATION_REQUEST";
-export const CLOSE_ORDER_MODAL = "CLOSE_ORDER_MODAL";
 
-export function pushOrder(order:IOrderBody) {
+export const ORDER_CONFIRMATION_REQUEST: "ORDER_CONFIRMATION_REQUEST" = "ORDER_CONFIRMATION_REQUEST";
+export const ORDER_CONFIRMATION_SUCCESS: "ORDER_CONFIRMATION_SUCCESS" = "ORDER_CONFIRMATION_SUCCESS";
+export const ORDER_CONFIRMATION_ERROR: "ORDER_CONFIRMATION_ERROR" = "ORDER_CONFIRMATION_ERROR";
 
-    return async function (dispatch:any) {
+export const CLOSE_ORDER_MODAL: "CLOSE_ORDER_MODAL" = "CLOSE_ORDER_MODAL";
+
+
+export interface IOrderConfirmationRequestAction {
+    readonly type: typeof ORDER_CONFIRMATION_REQUEST;
+}
+
+export interface IOrderConfirmationSuccessAction {
+    readonly type: typeof ORDER_CONFIRMATION_SUCCESS;
+    result: {
+        name: string;
+        orderNumber: string;
+        success: boolean;
+    }
+}
+
+export interface IOrderConfirmationErrorAction {
+    readonly type: typeof ORDER_CONFIRMATION_ERROR;
+    errorMsg: string;
+}
+
+export interface ICloseOrderModalAction {
+    readonly type: typeof CLOSE_ORDER_MODAL;
+}
+
+export type  TOrderActions =
+    IOrderConfirmationRequestAction
+    | IOrderConfirmationSuccessAction
+    | IOrderConfirmationErrorAction
+    | ICloseOrderModalAction;
+
+export const pushOrder: TAppThunk = (order: IOrderBody) => {
+
+    return async function (dispatch: any) {
 
         dispatch({
             type: ORDER_CONFIRMATION_REQUEST
@@ -22,20 +53,19 @@ export function pushOrder(order:IOrderBody) {
                 type: ORDER_CONFIRMATION_SUCCESS,
                 result: {
                     name: res.name,
-                    order: {number: res.order.number},
+                    orderNumber: res.order.number,
                     success: res.success
                 }
             })
 
             toast.success(`Заказ ${res.order.number}  успешно зарегистрирован в системе!`);
 
-        } catch (e:any) {
+        } catch (e: any) {
 
             dispatch({
                 type: ORDER_CONFIRMATION_ERROR,
-                result: {
-                    errorMsg: e
-                }
+                errorMsg: e
+
             })
 
             toast.error("При попытке регистрации заказа произошла ошибка: " + e.message);

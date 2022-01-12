@@ -1,3 +1,12 @@
+import {store} from "../services/store";
+import {TAuthActions} from "../services/actions/auth";
+import {TBurgerConstructorActions} from "../services/actions/burger-constructor";
+import {TIngredientListAction} from "../services/actions/ingredient-list";
+import {TOrderActions} from "../services/actions/order";
+import {Action, ActionCreator, Dispatch} from "redux";
+import {ThunkAction} from "redux-thunk";
+import {TWSActions} from "../services/actions/wsActions";
+
 export interface IIngredient {
     _id: string;
     name: string;
@@ -12,6 +21,14 @@ export interface IIngredient {
     image_large: string;
     __v: number;
 };
+
+export type IIngredientElementRef = React.RefObject<HTMLDivElement> | null;
+
+export interface ITabHeadersElements {
+    bunElement: IIngredientElementRef;
+    sauceElement: IIngredientElementRef;
+    mainElement: IIngredientElementRef;
+}
 
 export interface IOrderIngredient extends IIngredient {
     innerId: string;
@@ -28,9 +45,9 @@ export interface ITokenData {
 }
 
 export interface IUserInfo {
-    name?: string,
+    name: string,
     email: string,
-    password?: string
+    password: string
 }
 
 export interface IMyCustomResponse {
@@ -94,3 +111,35 @@ export type TNavLinkClassNameParam = {
 };
 
 
+export type TRootState = ReturnType<typeof store.getState>;
+
+export type TApplicationActions = TAuthActions
+    | TBurgerConstructorActions
+    | TIngredientListAction
+    | TOrderActions
+    | TWSActions;
+
+export type TAppThunk<TReturn = void> = ActionCreator<ThunkAction<TReturn, Action, TRootState, TApplicationActions>>;
+
+export type TAppDispatch = Dispatch<TApplicationActions>;  /*typeof store.dispatch;*/
+
+
+export interface IFeedCustomOrder<T>{
+    ingredients: Array<T>;
+    _id: string;
+    status: string;
+    number: string;
+    createdAt: string;
+    updatedAt: string;
+    name: string;
+}
+export type TFeedOrder = IFeedCustomOrder<string>;
+
+export type TFeedExtendedOrderInfo  = IFeedCustomOrder<IIngredient> & {totalPrice : number};
+
+export interface IFeedMessage {
+    success: boolean;
+    orders: Array<TFeedOrder>;
+    total: number;
+    totalToday: number;
+}

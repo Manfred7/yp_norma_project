@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector} from "react-redux";
+import {useSelector} from "../../services/hooks";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import {useNavigate, useParams} from "react-router-dom";
 
@@ -9,8 +9,8 @@ import {IIngredient} from "../../utils/types";
 
 const IngredientModal = () => {
 
-    const {id} = useParams();
-    const currentIngredient = useSelector(ingredientsSelectors.item(id)) as IIngredient;
+    const {id } = useParams() ;
+    const currentIngredient = useSelector(ingredientsSelectors.item(id as string)) as IIngredient;
 
     const navigate = useNavigate()
 

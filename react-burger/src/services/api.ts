@@ -9,7 +9,7 @@ import {
     URL_POST_REGISTER,
     URL_POST_TOKEN,
     URL_USER_INFO
-} from "../utils/data";
+} from "../utils/const";
 
 import {saveTokensToStorage} from "../utils/utils";
 import {TOKENS} from "../utils/const";
@@ -43,32 +43,32 @@ export const refreshToken = async () => {
 
 export const retriableFetch = async <T>(url: string, options: RequestInit): Promise<T | undefined> => {
 
-        try {
-            const res = await fetch(url, options);
-            return checkResponse<T>(res);
+    try {
+        const res = await fetch(url, options);
+        return checkResponse<T>(res);
 
-        } catch (err) {
+    } catch (err) {
 
-            if ((err instanceof Error) && (err.message === "jwt expired")) {
+        if ((err instanceof Error) && (err.message === "jwt expired")) {
 
-                const refreshData = await refreshToken();
-                const data = await checkResponse<ILoginResponse>(refreshData);
+            const refreshData = await refreshToken();
+            const data = await checkResponse<ILoginResponse>(refreshData);
 
-                saveTokensToStorage(data);
+            saveTokensToStorage(data);
 
-                if ((options) && (options.headers instanceof Headers)) {
-                    options.headers.set('authorization', data.accessToken);
-                }
-
-                const res = await fetch(url, options); // повторяем оригинальный запрос с оригинальными options (+ дополнительным хедером)
-                return checkResponse<T>(res);
-            } else {
-
-                throw err;
+            if ((options) && (options.headers instanceof Headers)) {
+                options.headers.set('authorization', data.accessToken);
             }
+
+            const res = await fetch(url, options); // повторяем оригинальный запрос с оригинальными options (+ дополнительным хедером)
+            return checkResponse<T>(res);
+        } else {
+
+            throw err;
         }
     }
-;
+};
+
 
 export const loadIngredientsData = async () => {
     return await fetch(`${URL_BASE}${URL_INGREDIENTS}`)

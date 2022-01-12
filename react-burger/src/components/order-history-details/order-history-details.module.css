@@ -1,0 +1,83 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 20px 50px 30px;
+}
+
+.headerBlock {
+
+}
+
+.orderName {
+    text-align: left
+}
+
+.orderStatus {
+    color: #00CCCC;
+    text-align: left
+}
+
+.ingredientsBlock {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 5px;
+}
+
+.scrollContainer {
+    height: calc(40vh);
+    overflow-y: scroll;
+}
+
+.catalogList {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.ingredientBlockCaption {
+    text-align: left;
+}
+
+.footerBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    margin-top: 10px;
+}
+
+
+.orderItem {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.itemImage {
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid;
+    color: #801ab3;
+    margin-left: -20px;
+}
+
+.itemName {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+.itemPrice {
+    display: flex;
+    justify-content: space-around;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.priceContainer {
+    display: flex;
+    justify-content: space-around;
+    margin-right: 20px;
+}

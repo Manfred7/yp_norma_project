@@ -3,7 +3,6 @@ import {
     loginToServer, logoutFromServer,
     passwordForgotRequest,
     passwordResetRequest,
-
     registerUserOnServer, updateUserInfo
 } from "../api";
 import {toast} from "react-toastify";
@@ -15,44 +14,185 @@ import {
     TFunc,
     ILoginResponse,
     IMyCustomResponse,
-    IUserInfoResponse, IUpdateUserInfoResponse, ILogoutFromServerResponse
+    IUserInfoResponse, IUpdateUserInfoResponse, ILogoutFromServerResponse, TAppDispatch, TAppThunk
 } from "../../utils/types";
 
-export const REGISTRATION_REQUEST = 'REGISTRATION_REQUEST';
-export const REGISTRATION_SUCCESS = 'REGISTRATION_SUCCESS';
-export const REGISTRATION_ERROR = 'REGISTRATION_ERROR';
+export const REGISTRATION_REQUEST: 'REGISTRATION_REQUEST' = 'REGISTRATION_REQUEST';
+export const REGISTRATION_SUCCESS: 'REGISTRATION_SUCCESS' = 'REGISTRATION_SUCCESS';
+export const REGISTRATION_ERROR: 'REGISTRATION_ERROR' = 'REGISTRATION_ERROR';
 
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGIN_ERROR = 'LOGIN_ERROR';
+export interface IRegistrationRequestAction {
+    readonly type: typeof REGISTRATION_REQUEST;
+}
 
-export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
-export const LOGOUT_ERROR = 'LOGOUT_ERROR';
+interface IUserInfoRequestSuccessActionProtoType {
+    email: string;
+    name: string;
+    accessToken: string;
+    refreshToken: string;
+}
 
-export const RESET_PASSWORD_INIT = 'RESET_PASSWORD_INIT';
+export interface IRegistrationSuccessAction extends IUserInfoRequestSuccessActionProtoType {
+    readonly type: typeof REGISTRATION_SUCCESS;
+}
 
-export const RESET_PASSWORD_FORGOT_REQUEST = 'RESET_PASSWORD_FORGOT_REQUEST';
-export const RESET_PASSWORD_FORGOT_SUCCESS = 'RESET_PASSWORD_FORGOT_SUCCESS';
-export const RESET_PASSWORD_FORGOT_ERROR = 'RESET_PASSWORD_FORGOT_ERROR';
+interface IErrorActionProtoType {
+    err_msg: string;
+}
 
-export const RESET_PASSWORD_RESET_REQUEST = 'RESET_PASSWORD_RESET_REQUEST';
-export const RESET_PASSWORD_RESET_SUCCESS = 'RESET_PASSWORD_RESET_SUCCESS';
-export const RESET_PASSWORD_RESET_ERROR = 'RESET_PASSWORD_RESET_ERROR';
+export interface IRegistrationErrorAction extends IErrorActionProtoType {
+    readonly type: typeof REGISTRATION_ERROR;
+}
 
-export const GET_USER_INFO_REQUEST = 'GET_USER_INFO_REQUEST';
-export const GET_USER_INFO_SUCCESS = 'GET_USER_INFO_SUCCESS';
-export const GET_USER_INFO_ERROR = 'GET_USER_INFO_ERROR';
+export const LOGIN_REQUEST: 'LOGIN_REQUEST' = 'LOGIN_REQUEST';
+export const LOGIN_SUCCESS: 'LOGIN_SUCCESS' = 'LOGIN_SUCCESS';
+export const LOGIN_ERROR: 'LOGIN_ERROR' = 'LOGIN_ERROR';
 
-export const START_EDIT_USER_INFO = 'START_EDIT_USER_INFO';
-export const END_EDIT_USER_INFO = 'END_EDIT_USER_INFO';
-export const UPDATE_USER_INFO_REQUEST = 'UPDATE_USER_INFO_REQUEST';
-export const UPDATE_USER_INFO_SUCCESS = 'UPDATE_USER_INFO_SUCCESS';
-export const UPDATE_USER_INFO_ERROR = 'UPDATE_USER_INFO_ERROR';
+export interface ILoginRequestAction {
+    readonly type: typeof LOGIN_REQUEST;
+}
 
-export function doRegistrationUserOnServer(userInfo: IUserInfo, goToNextStep: TFunc) {
+export interface ILoginSuccessAction extends IUserInfoRequestSuccessActionProtoType {
+    readonly type: typeof LOGIN_SUCCESS;
+}
 
-    return async function (dispatch: any) {
+export interface ILoginErrorAction extends IErrorActionProtoType {
+    readonly type: typeof LOGIN_ERROR;
+}
+
+export const LOGOUT_REQUEST: 'LOGOUT_REQUEST' = 'LOGOUT_REQUEST';
+export const LOGOUT_SUCCESS: 'LOGOUT_SUCCESS' = 'LOGOUT_SUCCESS';
+export const LOGOUT_ERROR: 'LOGOUT_ERROR' = 'LOGOUT_ERROR';
+
+export interface ILogoutRequestAction {
+    readonly type: typeof LOGOUT_REQUEST;
+}
+
+export interface ILogoutSuccessAction {
+    readonly type: typeof LOGOUT_SUCCESS;
+}
+
+export interface ILogoutErrorAction extends IErrorActionProtoType {
+    readonly type: typeof LOGOUT_ERROR;
+}
+
+export const RESET_PASSWORD_INIT: 'RESET_PASSWORD_INIT' = 'RESET_PASSWORD_INIT';
+export const RESET_PASSWORD_FORGOT_REQUEST: 'RESET_PASSWORD_FORGOT_REQUEST' = 'RESET_PASSWORD_FORGOT_REQUEST';
+export const RESET_PASSWORD_FORGOT_SUCCESS: 'RESET_PASSWORD_FORGOT_SUCCESS' = 'RESET_PASSWORD_FORGOT_SUCCESS';
+export const RESET_PASSWORD_FORGOT_ERROR: 'RESET_PASSWORD_FORGOT_ERROR' = 'RESET_PASSWORD_FORGOT_ERROR';
+
+export interface IResetPasswordInitAction {
+    readonly type: typeof RESET_PASSWORD_INIT;
+}
+
+export interface IResetPasswordForgotRequestAction {
+    readonly type: typeof RESET_PASSWORD_FORGOT_REQUEST;
+}
+
+interface IRequestSuccessProtoType {
+    requestSuccess: boolean;
+    message: string;
+}
+
+export interface IResetPasswordForgotSuccessAction extends IRequestSuccessProtoType {
+    readonly type: typeof RESET_PASSWORD_FORGOT_SUCCESS;
+}
+
+export interface IResetPasswordForgotErrorAction extends IErrorActionProtoType {
+    readonly type: typeof RESET_PASSWORD_FORGOT_ERROR;
+}
+
+export const RESET_PASSWORD_RESET_REQUEST: 'RESET_PASSWORD_RESET_REQUEST' = 'RESET_PASSWORD_RESET_REQUEST';
+export const RESET_PASSWORD_RESET_SUCCESS: 'RESET_PASSWORD_RESET_SUCCESS' = 'RESET_PASSWORD_RESET_SUCCESS';
+export const RESET_PASSWORD_RESET_ERROR: 'RESET_PASSWORD_RESET_ERROR' = 'RESET_PASSWORD_RESET_ERROR';
+
+export interface IResetPasswordResetRequestAction {
+    readonly type: typeof RESET_PASSWORD_RESET_REQUEST;
+}
+
+export interface IResetPasswordResetSuccessAction extends IRequestSuccessProtoType {
+    readonly type: typeof RESET_PASSWORD_RESET_SUCCESS;
+}
+
+export interface IResetPasswordResetErrorAction extends IErrorActionProtoType {
+    readonly type: typeof RESET_PASSWORD_RESET_ERROR;
+}
+
+export const GET_USER_INFO_REQUEST: 'GET_USER_INFO_REQUEST' = 'GET_USER_INFO_REQUEST';
+export const GET_USER_INFO_SUCCESS: 'GET_USER_INFO_SUCCESS' = 'GET_USER_INFO_SUCCESS';
+export const GET_USER_INFO_ERROR: 'GET_USER_INFO_ERROR' = 'GET_USER_INFO_ERROR';
+
+export interface IGetUserInfoRequestAction {
+    readonly type: typeof GET_USER_INFO_REQUEST;
+}
+
+export interface IGetUserInfoSuccessAction {
+    readonly type: typeof GET_USER_INFO_SUCCESS;
+    name: string;
+    email: string;
+}
+
+export interface IGetUserInfoErrorAction extends IErrorActionProtoType {
+    readonly type: typeof GET_USER_INFO_ERROR;
+}
+
+export const START_EDIT_USER_INFO: 'START_EDIT_USER_INFO' = 'START_EDIT_USER_INFO';
+export const END_EDIT_USER_INFO: 'END_EDIT_USER_INFO' = 'END_EDIT_USER_INFO';
+export const UPDATE_USER_INFO_REQUEST: 'UPDATE_USER_INFO_REQUEST' = 'UPDATE_USER_INFO_REQUEST';
+export const UPDATE_USER_INFO_SUCCESS: 'UPDATE_USER_INFO_SUCCESS' = 'UPDATE_USER_INFO_SUCCESS';
+export const UPDATE_USER_INFO_ERROR: 'UPDATE_USER_INFO_ERROR' = 'UPDATE_USER_INFO_ERROR';
+
+export interface IStartEditUserInfoAction {
+    readonly type: typeof START_EDIT_USER_INFO;
+}
+
+export interface IEndEditUserInfoAction {
+    readonly type: typeof END_EDIT_USER_INFO;
+}
+
+export interface IUpdateUserInfoRequestAction {
+    readonly type: typeof UPDATE_USER_INFO_REQUEST;
+}
+
+export interface IUpdateUserInfoSuccessAction {
+    readonly type: typeof UPDATE_USER_INFO_SUCCESS;
+    name: string;
+    email: string;
+}
+
+export interface IUpdateUserInfoErrorAction extends IErrorActionProtoType {
+    readonly type: typeof UPDATE_USER_INFO_ERROR;
+}
+
+export type TAuthActions =
+    IRegistrationRequestAction
+    | IRegistrationSuccessAction
+    | IRegistrationErrorAction
+    | ILoginRequestAction
+    | ILoginSuccessAction
+    | ILoginErrorAction
+    | ILogoutRequestAction
+    | ILogoutSuccessAction
+    | ILogoutErrorAction
+    | IResetPasswordInitAction
+    | IResetPasswordForgotRequestAction
+    | IResetPasswordForgotSuccessAction
+    | IResetPasswordForgotErrorAction
+    | IResetPasswordResetRequestAction
+    | IResetPasswordResetSuccessAction
+    | IResetPasswordResetErrorAction
+    | IGetUserInfoRequestAction
+    | IGetUserInfoSuccessAction
+    | IGetUserInfoErrorAction
+    | IStartEditUserInfoAction
+    | IEndEditUserInfoAction
+    | IUpdateUserInfoRequestAction
+    | IUpdateUserInfoSuccessAction
+    | IUpdateUserInfoErrorAction;
+
+export const doRegistrationUserOnServer: TAppThunk = (userInfo: IUserInfo, goToNextStep: TFunc) => {
+
+    return async function (dispatch: TAppDispatch) {
         dispatch({
             type: REGISTRATION_REQUEST
         });
@@ -89,7 +229,7 @@ export function doRegistrationUserOnServer(userInfo: IUserInfo, goToNextStep: TF
     };
 }
 
-export function doLoginUserOnServer(userInfo: IUserInfo) {
+export const doLoginUserOnServer: TAppThunk = (userInfo: IUserInfo) => {
 
     return async function (dispatch: any) {
 
@@ -127,7 +267,7 @@ export function doLoginUserOnServer(userInfo: IUserInfo) {
     };
 }
 
-export function doUserForgotPasswordOnServer(email: string, nextStep: TFunc) {
+export const doUserForgotPasswordOnServer: TAppThunk = (email: string, nextStep: TFunc) => {
 
 
     return async function (dispatch: any) {
@@ -161,7 +301,7 @@ export function doUserForgotPasswordOnServer(email: string, nextStep: TFunc) {
     };
 }
 
-export function doUserResetPasswordOnServer(userInfo: IPasswordResetParams, goToNextStep: TFunc) {
+export const doUserResetPasswordOnServer: TAppThunk = (userInfo: IPasswordResetParams, goToNextStep: TFunc) => {
 
     return async function (dispatch: any) {
 
@@ -198,7 +338,7 @@ export function doUserResetPasswordOnServer(userInfo: IPasswordResetParams, goTo
     }
 }
 
-export function doGetUserInfo() {
+export const doGetUserInfo: TAppThunk = () => {
 
     return async function (dispatch: any) {
 
@@ -232,7 +372,7 @@ export function doGetUserInfo() {
 
 }
 
-export function doUpdateUserInfo(userInfo: IUserInfo) {
+export const doUpdateUserInfo: TAppThunk = (userInfo: IUserInfo) => {
 
     return async function (dispatch: any) {
 
@@ -242,9 +382,9 @@ export function doUpdateUserInfo(userInfo: IUserInfo) {
 
         try {
 
-            const result = await updateUserInfo<IUpdateUserInfoResponse>(userInfo) as IUpdateUserInfoResponse ;
+            const result = await updateUserInfo<IUpdateUserInfoResponse>(userInfo) as IUpdateUserInfoResponse;
 
-             dispatch({
+            dispatch({
                 type: UPDATE_USER_INFO_SUCCESS,
                 requestSuccess: result.success,
                 email: result.user.email,
@@ -269,7 +409,7 @@ export function doUpdateUserInfo(userInfo: IUserInfo) {
 
 }
 
-export function doLogoutFromServer() {
+export const doLogoutFromServer: TAppThunk = () => {
 
     return async function (dispatch: any) {
 

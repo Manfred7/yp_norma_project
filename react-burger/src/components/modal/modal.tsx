@@ -1,4 +1,4 @@
-import React, {FC, ReactPortal} from 'react';
+import React, {FC} from 'react';
 import s from "./modal.module.css"
 import ReactDOM from "react-dom";
 import ModalOverlay from "../modal-overlay/modal-overlay";

@@ -1,7 +1,7 @@
 import React, {FC, useRef} from 'react';
 import {ConstructorElement, DragIcon, Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import s from "./burger-constructor.module.css"
-import {useDispatch, useSelector} from "react-redux";
+
 import {ADD_INGREDIENT, MOVE_INGREDIENT, REMOVE_INGREDIENT} from "../../services/actions/burger-constructor";
 import {useDrag, useDrop} from "react-dnd";
 import {AFTER_ADD_TO_CONSTRUCTOR, AFTER_REMOVE_FROM_CONSTRUCTOR} from "../../services/actions/ingredient-list";
@@ -13,6 +13,7 @@ import {useNavigate} from "react-router-dom";
 import {authSelectors} from "../../services/selectors/auth-selector";
 import {toast} from "react-toastify";
 import {IOrderIngredient} from "../../utils/types";
+import {useDispatch, useSelector} from "../../services/hooks";
 
 type TOrderIngredientPropsType = {
     key: string;
