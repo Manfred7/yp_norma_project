@@ -1,15 +1,30 @@
 import {INGREDIENT_TYPES} from "../../utils/const";
-import {getNewId} from "../../utils/data";
-import {ADD_INGREDIENT, MOVE_INGREDIENT, REMOVE_INGREDIENT, RESET_CONSTRUCTOR} from "../actions/burger-constructor";
+import {
+    ADD_INGREDIENT,
+    MOVE_INGREDIENT,
+    REMOVE_INGREDIENT,
+    RESET_CONSTRUCTOR,
+    TBurgerConstructorActions
+} from "../actions/burger-constructor";
+import { IOrderIngredient} from "../../utils/types";
 
-const initialState = {
+interface IOrder {
+    bun: IOrderIngredient | null;
+    mainsAndSauces: Array<IOrderIngredient>
+}
+
+interface IConstructorIngredientsState {
+    order: IOrder;
+}
+
+const initialState:IConstructorIngredientsState = {
     order: {
         bun: null,
         mainsAndSauces: []
     }
 };
 
-export const constructorIngredientsReducer = (state = initialState, action) => {
+export const constructorIngredientsReducer = (state:IConstructorIngredientsState = initialState, action:TBurgerConstructorActions) => {
     switch (action.type) {
 
         case     RESET_CONSTRUCTOR:
@@ -34,7 +49,7 @@ export const constructorIngredientsReducer = (state = initialState, action) => {
 
             if ((action.value.type === INGREDIENT_TYPES.MAIN) || (action.value.type === INGREDIENT_TYPES.SAUCE)) {
 
-                const newValue = {...action.value, innerId: getNewId()}
+                const newValue:IOrderIngredient = {...action.value}
                 let copyMainsAndSauces = [...state.order.mainsAndSauces];
                 copyMainsAndSauces = [...copyMainsAndSauces, newValue];
 

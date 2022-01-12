@@ -2,13 +2,14 @@ import React, {FC, useEffect, useRef} from 'react';
 import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
 import {IIngredient} from "../../utils/types"
 import s from "./burger-ingredients.module.css"
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, } from "react-redux";
 import {ingredientsSelectors} from "../../services/selectors/ingredients-list-selectors";
 import {useDrag} from "react-dnd";
 import {getBuns, getMains, getSauces} from "../../utils/utils";
 import {SET_CURRENT_TAB, SET_TAB_HEADERS} from "../../services/actions/ingredient-list";
 import { DRAG_DROP_TYPE, TAB_CAPTIONS} from "../../utils/const";
 import {useLocation, useNavigate} from "react-router-dom";
+import {useSelector} from "../../services/hooks";
 
 const IngrTabs = () => {
     const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const IngrTabs = () => {
         }
 
         if (scrollToElement) {
-            scrollToElement.scrollIntoView({
+            (scrollToElement as unknown as  HTMLElement).scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });

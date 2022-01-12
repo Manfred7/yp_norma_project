@@ -18,13 +18,34 @@ import {
     RESET_PASSWORD_INIT,
     RESET_PASSWORD_RESET_ERROR,
     RESET_PASSWORD_RESET_REQUEST,
-    RESET_PASSWORD_RESET_SUCCESS, START_EDIT_USER_INFO,
+    RESET_PASSWORD_RESET_SUCCESS, START_EDIT_USER_INFO, TAuthActions,
     UPDATE_USER_INFO_ERROR,
     UPDATE_USER_INFO_REQUEST,
     UPDATE_USER_INFO_SUCCESS
 } from "../actions/auth";
 
-const initialState = {
+interface IResetPasswordStatus {
+    requested: boolean,
+    requestSuccess: boolean,
+    message: string;
+}
+
+interface IAuthState {
+    email: string;
+    name: string;
+    password: string;
+    accessToken: string;
+    refreshToken: string;
+    isLoading: boolean;
+    hasError: boolean;
+    errorMsg: string;
+    isAuth: boolean;
+    userInfoChanged: boolean;
+    forgotPassword: IResetPasswordStatus;
+    resetPassword: IResetPasswordStatus;
+}
+
+const initialState: IAuthState = {
     email: "",
     name: "",
     password: "",
@@ -49,13 +70,11 @@ const initialState = {
     }
 };
 
-export const authReducer = (state = initialState, action) => {
-
+export const authReducer = (state:IAuthState = initialState, action : TAuthActions) => {
 
     switch (action.type) {
 
         case REGISTRATION_REQUEST: {
-
 
             return {
                 ...initialState,
@@ -89,8 +108,6 @@ export const authReducer = (state = initialState, action) => {
         }
 
         case LOGIN_REQUEST: {
-
-
             return {
                 ...initialState,
                 isLoading: true,
@@ -123,8 +140,6 @@ export const authReducer = (state = initialState, action) => {
         }
 
         case RESET_PASSWORD_INIT : {
-
-
             return {
 
                 ...state,

@@ -15,10 +15,10 @@
 
 .header {
     display: flex;
+    flex-direction: row;
     max-width: 100%;
     align-items: center;
     justify-content: space-between;
-    margin-left: 200px;
 }
 
 .btnClose {
@@ -32,7 +32,6 @@
 }
 
 .caption {
-
 
 }
 

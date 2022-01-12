@@ -2,14 +2,30 @@ import {
 
     ORDER_CONFIRMATION_REQUEST,
     ORDER_CONFIRMATION_SUCCESS,
-    ORDER_CONFIRMATION_ERROR, CLOSE_ORDER_MODAL
+    ORDER_CONFIRMATION_ERROR, CLOSE_ORDER_MODAL, TOrderActions
 } from "../actions/order";
+import {IOrderIngredient} from "../../utils/types";
 
-const initialState = {
+export interface IOrderBody {
+    bun: IOrderIngredient | null;
+    mainsAndSauces: Array<IOrderIngredient>;
+    number: string;
+    success: boolean;
+}
+
+export interface IOrderState {
+    order: IOrderBody;
+    isUpLoading: boolean;
+    modalIsVisible: boolean;
+    errMsg: string;
+    hasError: boolean;
+};
+
+const initialState: IOrderState = {
     order: {
         bun: null,
         mainsAndSauces: [],
-        number: -1,
+        number: '-1',
         success: false,
     },
     isUpLoading: false,
@@ -18,12 +34,12 @@ const initialState = {
     hasError: false,
 };
 
-export const orderReducer = (state = initialState, action) => {
+export const orderReducer = (state:IOrderState = initialState, action:TOrderActions) => {
 
     switch (action.type) {
 
 
-        case CLOSE_ORDER_MODAL:{
+        case CLOSE_ORDER_MODAL: {
             return {
                 ...initialState
             }
@@ -38,11 +54,11 @@ export const orderReducer = (state = initialState, action) => {
 
         case  ORDER_CONFIRMATION_SUCCESS: {
 
-            const newState = {
+            const newState :IOrderState = {
                 ...state,
                 order: {
                     ...state.order,
-                    number: action.result.order.number,
+                    number: action.result.orderNumber,
                     success: action.result.success
                 },
 
@@ -59,7 +75,7 @@ export const orderReducer = (state = initialState, action) => {
                 success: false,
                 hasError: true,
                 isUpLoading: false,
-                errMsg: action.result.errorMsg
+                errMsg: action.errorMsg
             };
         }
 

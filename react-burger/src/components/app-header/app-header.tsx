@@ -32,7 +32,7 @@ const AppHeader = () => {
                     <li className={s.siteNavigationItem}>
                         <ListIcon type="primary"/>
                         <NavLink className={navLinkClassName}
-                                 to={APP_ROUTS.ORDERS_LIST} >
+                                 to={APP_ROUTS.FEED} >
                             Лента заказов
                         </NavLink>
 

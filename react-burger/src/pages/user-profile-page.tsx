@@ -1,14 +1,14 @@
-import React from 'react';
+import React, {FC} from 'react';
 import s from "./user-profile-page.module.css";
 import {Button, Input} from "@ya.praktikum/react-developer-burger-ui-components";
 import {NavLink, Outlet, useMatch} from "react-router-dom";
 import {APP_ROUTS} from "../utils/const";
 import {doLogoutFromServer, doUpdateUserInfo, END_EDIT_USER_INFO, START_EDIT_USER_INFO} from "../services/actions/auth";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../services/hooks";
 import {authSelectors} from "../services/selectors/auth-selector";
 import {TNavLinkClassNameParam} from "../utils/types";
 
-export const EditUserProfileForm = () => {
+export const EditUserProfileForm: FC = () => {
 
     const dispatch = useDispatch();
 
@@ -131,7 +131,7 @@ export const EditUserProfileForm = () => {
     )
 }
 
-const UserProfileNavigation = () => {
+const UserProfileNavigation: FC = () => {
     const dispatch = useDispatch();
     const isProfileEditRoute = useMatch(APP_ROUTS.PROFILE);
 
@@ -161,7 +161,7 @@ const UserProfileNavigation = () => {
 
                     <NavLink
 
-                        to={{pathname: APP_ROUTS.ORDERS_LIST}}
+                        to={{pathname: APP_ROUTS.ORDERS_HISTORY}}
                         end
                         className={navLinkClassName}
                     >

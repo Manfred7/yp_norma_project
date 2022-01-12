@@ -1,11 +1,11 @@
 import React, {FC, useRef} from 'react';
 import {ConstructorElement, DragIcon, Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import s from "./burger-constructor.module.css"
-import {useDispatch, useSelector} from "react-redux";
+
 import {ADD_INGREDIENT, MOVE_INGREDIENT, REMOVE_INGREDIENT} from "../../services/actions/burger-constructor";
 import {useDrag, useDrop} from "react-dnd";
 import {AFTER_ADD_TO_CONSTRUCTOR, AFTER_REMOVE_FROM_CONSTRUCTOR} from "../../services/actions/ingredient-list";
-import {sumPrice} from "../../utils/utils";
+import {getNewId, sumPrice} from "../../utils/utils";
 import {APP_ROUTS, DRAG_DROP_TYPE, INGREDIENT_TYPES} from "../../utils/const";
 import {pushOrder} from "../../services/actions/order";
 import {constructorSelectors} from "../../services/selectors/constructor-ingredients-selector";
@@ -13,6 +13,7 @@ import {useNavigate} from "react-router-dom";
 import {authSelectors} from "../../services/selectors/auth-selector";
 import {toast} from "react-toastify";
 import {IOrderIngredient} from "../../utils/types";
+import {useDispatch, useSelector} from "../../services/hooks";
 
 type TOrderIngredientPropsType = {
     key: string;
@@ -21,7 +22,7 @@ type TOrderIngredientPropsType = {
 };
 
 type TConstructorSortItem = {
-    index:number;
+    index: number;
 }
 
 interface IBunProps {
@@ -44,7 +45,7 @@ const Bun = (props: IBunProps) => {
     </div>)
 }
 
-const OrderIngredient:FC<TOrderIngredientPropsType>=(props) => {
+const OrderIngredient: FC<TOrderIngredientPropsType> = (props) => {
 
     const {elem, index} = props;
 
@@ -78,8 +79,8 @@ const OrderIngredient:FC<TOrderIngredientPropsType>=(props) => {
     const [, drop] = useDrop({
         accept: DRAG_DROP_TYPE.CONSTRUCTOR_SORT,
 
-        hover(item:TConstructorSortItem
-              , monitor) {
+        hover(item: TConstructorSortItem
+            , monitor) {
 
             if (!ref.current) {
                 return;
@@ -199,7 +200,7 @@ const BurgerConstructor = () => {
 
     const [, dropRef] = useDrop({
         accept: DRAG_DROP_TYPE.FROM_LIST_TO_CONSTRUCTOR,
-        drop(item:IOrderIngredient) {
+        drop(item: IOrderIngredient) {
 
             if ((currentBun) && (item.type === INGREDIENT_TYPES.BUN)) {
 
@@ -223,7 +224,7 @@ const BurgerConstructor = () => {
 
             dispatch({
                 type: ADD_INGREDIENT,
-                value: {...item}
+                value: {...item, innerId:getNewId()},
 
             });
 

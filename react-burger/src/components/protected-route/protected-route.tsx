@@ -1,18 +1,18 @@
-import {Navigate, RouteProps, useLocation} from 'react-router-dom';
-import {useSelector} from "react-redux";
+import {matchPath, Navigate, RouteProps, useLocation} from 'react-router-dom';
+import {useSelector} from "../../services/hooks";
 import {authSelectors} from "../../services/selectors/auth-selector";
 import {APP_ROUTS} from "../../utils/const";
 import * as React from "react";
 
 import {FC} from 'react';
 
-const AuthorisedOnlyRoutes = [APP_ROUTS.PROFILE, APP_ROUTS.ORDERS_LIST];
+const AuthorisedOnlyRoutes = [APP_ROUTS.PROFILE, APP_ROUTS.ORDERS_HISTORY, APP_ROUTS.ORDER_ID];
 const NotAuthorisedOnlyRoutes = [APP_ROUTS.LOGIN, APP_ROUTS.REGISTRATION, APP_ROUTS.FORGOT_PASSWORD, APP_ROUTS.RESET_PASSWORD];
 
 const checkAuthorisedOnly = (pathname: string, forgotPasswordRequested: boolean) => {
 
     const result = AuthorisedOnlyRoutes.some(value => {
-        return value === pathname
+        return matchPath({path: value}, pathname)
     });
 
     const checkResetPasswordIsStepTwo = () => {
@@ -24,7 +24,7 @@ const checkAuthorisedOnly = (pathname: string, forgotPasswordRequested: boolean)
 const checkNotAuthorisedOnly = (pathname: string) => {
 
     return NotAuthorisedOnlyRoutes.some(value => {
-        return value === pathname
+        return matchPath({path: value}, pathname)
     });
 }
 

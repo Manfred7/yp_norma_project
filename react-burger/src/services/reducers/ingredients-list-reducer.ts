@@ -3,11 +3,23 @@ import {
     GET_ITEMS_REQUEST,
     GET_ITEMS_SUCCESS, RESET_INGREDIENT_LIST,
     SET_CURRENT_TAB,
-    SET_TAB_HEADERS
+    SET_TAB_HEADERS, TIngredientListAction
 } from "../actions/ingredient-list";
 import {TAB_CAPTIONS} from "../../utils/const";
+import {IIngredient, ITabHeadersElements} from "../../utils/types";
 
-const initialState = {
+
+
+
+interface  IIngredientListState{
+    ingredientsList:Array<IIngredient>;
+    hasError: boolean;
+    needReload: boolean;
+    isLoading: boolean;
+    currentTab: TAB_CAPTIONS;
+    tabHeadersElements:ITabHeadersElements
+}
+const initialState :IIngredientListState = {
     ingredientsList: [],
     hasError: false,
     needReload: true,
@@ -16,7 +28,7 @@ const initialState = {
     tabHeadersElements: {bunElement: null, sauceElement: null, mainElement: null}
 };
 
-export const ingredientListReducer = (state = initialState, action) => {
+export const ingredientListReducer = (state = initialState, action:TIngredientListAction) => {
     switch (action.type) {
 
         case RESET_INGREDIENT_LIST: {
