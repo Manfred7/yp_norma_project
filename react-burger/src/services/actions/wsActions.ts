@@ -1,4 +1,4 @@
-import {IFeedMessage} from "../../utils/types";
+import {IFeedMessage, TwsActions} from "../../utils/types";
 
 export const WS_CONNECTION_START: 'WS_CONNECTION_START' = 'WS_CONNECTION_START';
 export const WS_CONNECTION_DISCONNECT: 'WS_CONNECTION_DISCONNECT' = 'WS_CONNECTION_DISCONNECT';
@@ -8,10 +8,8 @@ export const WS_CONNECTION_ERROR: 'WS_CONNECTION_ERROR' = 'WS_CONNECTION_ERROR';
 export const WS_CONNECTION_CLOSED: 'WS_CONNECTION_CLOSED' = 'WS_CONNECTION_CLOSED';
 export const WS_GET_MESSAGE: 'WS_GET_MESSAGE' = 'WS_GET_MESSAGE';
 
-
 export interface IWS_ConnectionDisconnectAction {
     readonly type: typeof WS_CONNECTION_DISCONNECT;
-
 }
 
 export interface IWS_ConnectionStartAction {
@@ -43,3 +41,13 @@ export type TWSActions =
     | IWS_ConnectionErrorAction
     | IWS_ConnectionClosedAction
     | IWS_GetMessageAction;
+
+
+export const wsActions: TwsActions = {
+    wsInit: WS_CONNECTION_START,
+    onOpen: WS_CONNECTION_SUCCESS,
+    onClose: WS_CONNECTION_CLOSED,
+    onError: WS_CONNECTION_ERROR,
+    onMessage: WS_GET_MESSAGE,
+    wsDisconnect: WS_CONNECTION_DISCONNECT
+};

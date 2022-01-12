@@ -1,5 +1,4 @@
 import {INGREDIENT_TYPES} from "../../utils/const";
-import {getNewId} from "../../utils/utils";
 import {
     ADD_INGREDIENT,
     MOVE_INGREDIENT,
@@ -50,7 +49,7 @@ export const constructorIngredientsReducer = (state:IConstructorIngredientsState
 
             if ((action.value.type === INGREDIENT_TYPES.MAIN) || (action.value.type === INGREDIENT_TYPES.SAUCE)) {
 
-                const newValue:IOrderIngredient = {...action.value, innerId: getNewId()}
+                const newValue:IOrderIngredient = {...action.value}
                 let copyMainsAndSauces = [...state.order.mainsAndSauces];
                 copyMainsAndSauces = [...copyMainsAndSauces, newValue];
 

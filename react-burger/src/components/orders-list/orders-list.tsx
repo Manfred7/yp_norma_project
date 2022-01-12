@@ -68,48 +68,51 @@ const FeedOrderInfo: FC<IFeedOrderInfoProps> = ({orderInfo, showOrderStatus}) =>
 
     return (
         <li className={s.catalogItem} onClick={showModal}>
+            <div className={s.catalogItemContainer}>
+                
+                <div className={s.ingredientBoxHeader}>
 
-            <div className={s.ingredientBoxHeader}>
-
-                <div className={s.ingredientBoxNumber}>
-                    <p className="text text_type_digits-default">
-                        {`#${orderInfo.number}`}
-                    </p>
-                </div>
-
-                <div className={s.ingredientBoxDate}>
-                    <p className="text text_type_main-small">
-                        {getFormattedDateTime(orderInfo.createdAt)}
-
-                    </p>
-                </div>
-
-            </div>
-
-            <div className={s.ingredientBoxName}>
-                <p className="text text_type_main-medium">
-                    {orderInfo.name}
-                </p>
-                {showOrderStatus && (
-                    <div>
-                        <p className="text text_type_main-small mt-3">
-                            {ORDER_STATUS[orderInfo.status]}
+                    <div className={s.ingredientBoxNumber}>
+                        <p className="text text_type_digits-default">
+                            {`#${orderInfo.number}`}
                         </p>
                     </div>
 
-                )}
-            </div>
+                    <div className={s.ingredientBoxDate}>
+                        <p className="text text_type_main-small">
+                            {getFormattedDateTime(orderInfo.createdAt)}
 
-
-            <div className={s.ingredientBoxFooter}>
-                <IngredientImages ingredients={orderInfo.ingredients}/>
-
-                <div className={s.priceContainer}>
-                    <div className="text text_type_digits-small">
-                        {orderInfo.totalPrice}
+                        </p>
                     </div>
-                    <CurrencyIcon type="primary"/>
+
                 </div>
+
+                <div className={s.ingredientBoxName}>
+                    <p className="text text_type_main-medium">
+                        {orderInfo.name}
+                    </p>
+                    {showOrderStatus && (
+                        <div>
+                            <p className="text text_type_main-small mt-3">
+                                {ORDER_STATUS[orderInfo.status]}
+                            </p>
+                        </div>
+
+                    )}
+                </div>
+
+
+                <div className={s.ingredientBoxFooter}>
+                    <IngredientImages ingredients={orderInfo.ingredients}/>
+
+                    <div className={s.priceContainer}>
+                        <div className="text text_type_digits-small">
+                            {orderInfo.totalPrice}
+                        </div>
+                        <CurrencyIcon type="primary"/>
+                    </div>
+                </div>
+
             </div>
         </li>
     )
