@@ -247,7 +247,7 @@ const BurgerConstructor = () => {
     });
 
     return (
-        <section ref={dropRef}>
+        <section ref={dropRef} data-cy="productBox">
 
             {currentBun &&
                 <div className={s.bunContainer}>

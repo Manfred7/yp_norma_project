@@ -10,7 +10,7 @@ const OrderDetails: FC<IOrderDetailsProps> = (props) => {
 
     return (
         <div className={s.mainContainer}>
-            <h3 className="text text_type_digits-large">{props.orderId}</h3>
+            <h3 data-cy="OrderDetails_Id" className="text text_type_digits-large">{props.orderId}</h3>
             <p className="text text_type_main-medium">идентификатор заказа</p>
             <img className={s.doneIcon} src={done} alt={"done"}/>
             <p className="text text_type_main-small">Ваш заказ начали готовить</p>

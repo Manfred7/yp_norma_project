@@ -1,6 +1,6 @@
 import {URL_BASE, URL_INGREDIENTS, URL_POST_LOGIN, URL_POST_ORDER} from "../../../src/utils/const";
 
-describe('service is available', function () {
+describe('create order in burger constructor', function () {
 
     before(function () {
         cy.visit('http://localhost:3000');
@@ -8,7 +8,7 @@ describe('service is available', function () {
         cy.intercept('GET', `${URL_BASE}${URL_INGREDIENTS}`, {fixture: 'ingredient-list.json'}).as('getMethods')
     });
 
-    it('should test drag and drop burger ingredients', function () {
+    it('should add burger ingredients with drag and drop ', function () {
 
         cy.get('[data-cy=DragItem]').first().as('bun');
 
@@ -42,7 +42,7 @@ describe('service is available', function () {
 
     });
 
-    it('should be show ingredients details', function () {
+    it('should be show and close ingredient details', function () {
 
         cy.get('[data-cy=DragItem]').first().as('bun');
         cy.get('@bun')
@@ -55,9 +55,10 @@ describe('service is available', function () {
         cy.get('[data-cy=IngredientDetails_carbohydrates]').should('contain', '53')
 
         cy.get("body").click(0, 0)
-
         cy.get('[data-cy=IngredientDetails_name]').should('not.exist');
+
     });
+
 
     it('should be create order', function () {
 

@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZWVkZGVhNmQ3Y2Q4MDAxYjJkMjUxMiIsImlhdCI6MTY0MzA5OTU4MywiZXhwIjoxNjQzMTAwNzgzfQ.DYk-FmLmAKiZsKOfhQ8bAA63pANNt0Zxdq-Z2qFHS-s",
+  "refreshToken": "060079afc6381dc75f2c4728984da86012280b56222e5de9cd2b9d0284da6c2217290a1fa9c7fbda",
+  "user": {
+    "email": "vaspeyukne@vusra.com",
+    "name": "TestUser"
+  }
+}
