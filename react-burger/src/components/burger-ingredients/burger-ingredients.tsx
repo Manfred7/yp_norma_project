@@ -96,7 +96,7 @@ const Ingredient : FC<IIngredientProps> = ({value}) => {
     }
 
     return (
-        <li ref={dragRef} className={s.catalogItem}>
+        <li ref={dragRef} className={s.catalogItem}  data-cy="DragItem">
 
             <img src={value.image} alt={value.name} onClick={showModal}/>
 
